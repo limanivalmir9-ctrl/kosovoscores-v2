@@ -1,0 +1,442 @@
+{
+  "name": "Match",
+  "type": "object",
+  "properties": {
+    "competition_id": {
+      "type": "string"
+    },
+    "round": {
+      "type": "number",
+      "description": "Round/week number"
+    },
+    "phase_text": {
+      "type": "string",
+      "description": "Phase label e.g. GJYSEMFINALE, FINALE"
+    },
+    "phase_order": {
+      "type": "number",
+      "description": "Sort order for cup phases"
+    },
+    "home_team_id": {
+      "type": "string"
+    },
+    "away_team_id": {
+      "type": "string"
+    },
+    "home_team_name": {
+      "type": "string"
+    },
+    "away_team_name": {
+      "type": "string"
+    },
+    "home_team_logo": {
+      "type": "string"
+    },
+    "away_team_logo": {
+      "type": "string"
+    },
+    "home_score": {
+      "type": "number",
+      "default": 0
+    },
+    "away_score": {
+      "type": "number",
+      "default": 0
+    },
+    "home_red_cards": {
+      "type": "number",
+      "default": 0
+    },
+    "away_red_cards": {
+      "type": "number",
+      "default": 0
+    },
+    "stadium": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "time": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "first_half",
+        "half_time",
+        "second_half",
+        "awaiting_extra_time",
+        "extra_time_first_half",
+        "extra_time_half_time",
+        "extra_time_second_half",
+        "penalties",
+        "full_time",
+        "cancelled",
+        "interrupted",
+        "postponed",
+        "official_result"
+      ],
+      "default": "scheduled"
+    },
+    "interrupted_reason": {
+      "type": "string",
+      "description": "Reason the match was interrupted (set by the agent, shown live \u2014 not added to the timeline)"
+    },
+    "pre_interrupt_status": {
+      "type": "string",
+      "description": "Status to restore when the match resumes after an interruption"
+    },
+    "stadium_photo_start": {
+      "type": "string",
+      "description": "Stadium photo taken by the agent before kickoff (URL)"
+    },
+    "stadium_photo_end": {
+      "type": "string",
+      "description": "Stadium photo taken by the agent at the end of the match (URL)"
+    },
+    "minute": {
+      "type": "number",
+      "default": 0
+    },
+    "match_start_timestamp": {
+      "type": "number"
+    },
+    "second_half_start_timestamp": {
+      "type": "number"
+    },
+    "extra_time_start_timestamp": {
+      "type": "number"
+    },
+    "extra_time_sh_start_timestamp": {
+      "type": "number"
+    },
+    "extra_time_first_half": {
+      "type": "number",
+      "default": 0
+    },
+    "extra_time_second_half": {
+      "type": "number",
+      "default": 0
+    },
+    "match_code": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string",
+      "description": "SEO-friendly URL slug for /ndeshja/:slug routes"
+    },
+    "assigned_agent_id": {
+      "type": "string"
+    },
+    "referee_main": {
+      "type": "string"
+    },
+    "referee_assistant1": {
+      "type": "string"
+    },
+    "referee_assistant2": {
+      "type": "string"
+    },
+    "referee_var": {
+      "type": "string"
+    },
+    "referee_avar": {
+      "type": "string"
+    },
+    "referee_forth": {
+      "type": "string"
+    },
+    "home_lineup": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "player_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "number": {
+            "type": "number"
+          },
+          "starter": {
+            "type": "boolean"
+          },
+          "is_captain": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "away_lineup": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "player_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "number": {
+            "type": "number"
+          },
+          "starter": {
+            "type": "boolean"
+          },
+          "is_captain": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "home_coach": {
+      "type": "string"
+    },
+    "away_coach": {
+      "type": "string"
+    },
+    "competition_name": {
+      "type": "string"
+    },
+    "competition_color": {
+      "type": "string"
+    },
+    "competition_tier": {
+      "type": "number"
+    },
+    "last_goal_timestamp": {
+      "type": "number"
+    },
+    "is_cup_match": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_test_match": {
+      "type": "boolean",
+      "default": false
+    },
+    "show_in_live": {
+      "type": "boolean",
+      "default": true
+    },
+    "has_var": {
+      "type": "boolean",
+      "default": false
+    },
+    "lineup_locked": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, agents cannot access the lineups/formations tab"
+    },
+    "disabled_event_buttons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_last_seen": {
+      "type": "number"
+    },
+    "penalty_home": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string"
+          },
+          "player": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "penalty_away": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string"
+          },
+          "player": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "penalty_first_team": {
+      "type": "string"
+    },
+    "penalty_winner": {
+      "type": "string"
+    },
+    "var_review_text": {
+      "type": "string"
+    },
+    "var_review_team": {
+      "type": "string"
+    },
+    "deep_stats": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable deep statistics tracking for this match"
+    },
+    "stats_home_corners": {
+      "type": "number",
+      "default": 0
+    },
+    "stats_away_corners": {
+      "type": "number",
+      "default": 0
+    },
+    "stats_home_shots": {
+      "type": "number",
+      "default": 0
+    },
+    "stats_away_shots": {
+      "type": "number",
+      "default": 0
+    },
+    "stats_home_shots_off": {
+      "type": "number",
+      "default": 0
+    },
+    "stats_away_shots_off": {
+      "type": "number",
+      "default": 0
+    },
+    "stats_possession_current": {
+      "type": "string"
+    },
+    "stats_possession_home_ms": {
+      "type": "number",
+      "default": 0
+    },
+    "stats_possession_away_ms": {
+      "type": "number",
+      "default": 0
+    },
+    "stats_possession_last_switch": {
+      "type": "number"
+    },
+    "stats_possession_kick_off_team": {
+      "type": "string"
+    },
+    "super_deep": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable SuperDeep live ball tracking and advanced agent controls"
+    },
+    "sd_ball_pos": {
+      "type": "object",
+      "description": "SuperDeep ball position {x, y} as percentage 0-100"
+    },
+    "sd_ball_visible": {
+      "type": "boolean",
+      "default": false
+    },
+    "sd_possession": {
+      "type": "string",
+      "description": "SuperDeep possession: home or away"
+    },
+    "sd_home_side": {
+      "type": "string",
+      "description": "SuperDeep home side first half: left or right"
+    },
+    "sd_stats": {
+      "type": "object",
+      "description": "SuperDeep advanced stats object"
+    },
+    "sd_home_color": {
+      "type": "string"
+    },
+    "sd_away_color": {
+      "type": "string"
+    },
+    "sd_last_event": {
+      "type": "object"
+    },
+    "sd_corner_arrow": {
+      "type": "object"
+    },
+    "sd_weather": {
+      "type": "string"
+    },
+    "sd_temp": {
+      "type": "number"
+    },
+    "sd_pre_match_set": {
+      "type": "boolean",
+      "default": false
+    },
+    "sd_zone": {
+      "type": "string",
+      "enum": [
+        "defence",
+        "midfield",
+        "attack"
+      ],
+      "description": "Zone where the possessing team has the ball: defence/midfield/attack"
+    },
+    "basic_coverage": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, this match uses the simplified Basic Coverage agent panel (goals + red cards only). Agent is taken directly into the basic panel on login, no match code entry required."
+    },
+    "highlights_url": {
+      "type": "string",
+      "description": "YouTube highlights link for this match"
+    },
+    "slow_update": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, event updates may be delayed \u2014 show 'P\u00ebrdit\u00ebsim i ngadalt\u00eb' notice on public match"
+    },
+    "admin_et_first_half": {
+      "type": "number",
+      "default": 0,
+      "description": "Admin evidence: stoppage time minutes added to first half"
+    },
+    "admin_et_second_half": {
+      "type": "number",
+      "default": 0,
+      "description": "Admin evidence: stoppage time minutes added to second half"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "competition_id",
+    "home_team_id",
+    "away_team_id",
+    "date"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

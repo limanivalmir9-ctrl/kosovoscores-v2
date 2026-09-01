@@ -1,0 +1,93 @@
+{
+  "name": "Club",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "string",
+      "description": "Club logo URL"
+    },
+    "stadium": {
+      "type": "string"
+    },
+    "stadium_image": {
+      "type": "string",
+      "description": "Stadium photo URL"
+    },
+    "coach": {
+      "type": "string",
+      "description": "Head coach name"
+    },
+    "coach_photo": {
+      "type": "string",
+      "description": "Coach photo URL"
+    },
+    "home_color": {
+      "type": "string",
+      "description": "Home jersey color (used for timeline)"
+    },
+    "away_color": {
+      "type": "string",
+      "description": "Away jersey color (used for timeline)"
+    },
+    "kit_home": {
+      "type": "string",
+      "description": "Home jersey photo URL"
+    },
+    "kit_away": {
+      "type": "string",
+      "description": "Away jersey photo URL"
+    },
+    "kit_third": {
+      "type": "string",
+      "description": "Third/alternate jersey photo URL"
+    },
+    "competition_id": {
+      "type": "string",
+      "description": "Competition this club belongs to"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "If false, club is hidden from all leagues in the current season but not deleted"
+    },
+    "show_squad": {
+      "type": "boolean",
+      "default": true,
+      "description": "If false, the squad (players list) tab is hidden on this club's profile page. Per-club override of the competition setting."
+    },
+    "club_id": {
+      "type": "string",
+      "description": "Unique 6-digit club ID \u2014 admin-only identifier, never shown on public pages. Immutable once set."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "name",
+    "competition_id"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "name": "Ad",
+  "type": "object",
+  "properties": {
+    "image": {
+      "type": "string",
+      "description": "Ad banner image URL"
+    },
+    "competition_id": {
+      "type": "string",
+      "description": "Competition to show this ad for (optional)"
+    },
+    "placement": {
+      "type": "string",
+      "enum": [
+        "top",
+        "bottom",
+        "side_desktop",
+        "float",
+        "sidebar_left",
+        "sidebar_right",
+        "sponsor",
+        "header_left",
+        "header_right"
+      ],
+      "description": "top/bottom = before/after competition matches; sidebar_left/sidebar_right = desktop side columns (flexible size in px); sponsor = mobile live page sponsors; side_desktop = legacy sidebar; float = free position; header_left/header_right = deprecated header slots"
+    },
+    "device": {
+      "type": "string",
+      "enum": [
+        "both",
+        "mobile",
+        "desktop"
+      ],
+      "default": "both",
+      "description": "Where to show this ad: both (default), mobile only, or desktop only"
+    },
+    "pos_x": {
+      "type": "number",
+      "description": "Horizontal position as percentage (0-100) for float placement"
+    },
+    "pos_y": {
+      "type": "number",
+      "description": "Vertical position as percentage (0-100) for float placement"
+    },
+    "width": {
+      "type": "number",
+      "description": "Ad width in pixels"
+    },
+    "height": {
+      "type": "number",
+      "description": "Ad height in pixels"
+    },
+    "link": {
+      "type": "string",
+      "description": "Click URL"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "rotation_group": {
+      "type": "string",
+      "description": "Group name for rotating banners (e.g. 'led-top'). Banners in the same group rotate automatically."
+    },
+    "rotation_seconds": {
+      "type": "number",
+      "description": "Seconds to show this banner before flipping to next. Default 5.",
+      "default": 5
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "image",
+    "placement"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

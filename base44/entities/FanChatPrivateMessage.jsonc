@@ -1,0 +1,59 @@
+{
+  "name": "FanChatPrivateMessage",
+  "type": "object",
+  "properties": {
+    "scout_user_id": {
+      "type": "string",
+      "description": "ID of the fan/scout user"
+    },
+    "scout_username": {
+      "type": "string"
+    },
+    "scout_display_name": {
+      "type": "string"
+    },
+    "sender": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "scout"
+      ],
+      "description": "Who sent this message"
+    },
+    "content": {
+      "type": "string"
+    },
+    "read_by_scout": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "scout_user_id",
+    "scout_username",
+    "sender",
+    "content"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

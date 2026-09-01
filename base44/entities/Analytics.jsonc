@@ -1,0 +1,73 @@
+{
+  "name": "Analytics",
+  "type": "object",
+  "properties": {
+    "event": {
+      "type": "string",
+      "description": "page_view, match_click, pwa_install_prompt, pwa_installed, etc."
+    },
+    "page": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "user_agent": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country code e.g. XK, AL, DE"
+    },
+    "country_name": {
+      "type": "string",
+      "description": "Full country name"
+    },
+    "region": {
+      "type": "string",
+      "description": "Region/state name"
+    },
+    "city": {
+      "type": "string",
+      "description": "City name"
+    },
+    "timezone": {
+      "type": "string",
+      "description": "Browser timezone"
+    },
+    "language": {
+      "type": "string",
+      "description": "Browser language"
+    },
+    "referrer": {
+      "type": "string",
+      "description": "Referring URL"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "event"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

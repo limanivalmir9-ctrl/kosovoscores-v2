@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="sq">
+  <head>
+    <link rel="preconnect" href="https://media.base44.com" crossorigin />
+    <link rel="dns-prefetch" href="https://media.base44.com" />
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232b2f36%22/><clipPath id=%22b%22><circle cx=%2250%22 cy=%2250%22 r=%2234%22/></clipPath><g clip-path=%22url(%23b)%22><rect x=%2216%22 y=%2216%22 width=%2234%22 height=%2268%22 fill=%22%23ffcc00%22/><rect x=%2250%22 y=%2216%22 width=%2234%22 height=%2268%22 fill=%22%231d6fa4%22/></g><circle cx=%2250%22 cy=%2250%22 r=%2234%22 fill=%22none%22 stroke=%22%230f1115%22 stroke-width=%223%22/><polygon points=%2250,40 59,46 56,57 44,57 41,46%22 fill=%22%230f1115%22/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="KosovoScores" />
+    <meta name="application-name" content="KosovoScores" />
+    <meta name="theme-color" content="#1d6fa4" />
+    <link rel="apple-touch-icon" href="https://media.base44.com/images/public/69c340685dca7075d7622e15/702c80214_8c53466ae_logo.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>KosovoScores – Rezultate LIVE dhe Statistika të Futbollit në Kosovë</title>
+    <meta name="description" content="KosovoScores.com is the ultimate destination for real-time football scores, standings, and match updates from Superliga, Liga e Pare and Kupa e Kosoves." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://kosovoscores.com/" />
+    <meta property="og:site_name" content="KosovoScores" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="sq_AL" />
+    <meta property="og:title" content="KosovoScores – Rezultate LIVE dhe Statistika të Futbollit në Kosovë" />
+    <meta property="og:description" content="KosovoScores.com is the ultimate destination for real-time football scores, standings, and match updates from Superliga, Liga e Pare and Kupa e Kosoves." />
+    <meta property="og:url" content="https://kosovoscores.com/" />
+    <meta property="og:image" content="https://media.base44.com/images/public/69c340685dca7075d7622e15/702c80214_8c53466ae_logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="KosovoScores – Rezultate LIVE dhe Statistika të Futbollit në Kosovë" />
+    <meta name="twitter:description" content="KosovoScores.com — real-time football scores, standings and match updates from Kosovo leagues." />
+    <meta name="twitter:image" content="https://media.base44.com/images/public/69c340685dca7075d7622e15/702c80214_8c53466ae_logo.png" />
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebSite","name":"KosovoScores","url":"https://kosovoscores.com/","inLanguage":"sq","description":"Rezultate LIVE dhe statistika të futbollit në Kosovë","potentialAction":{"@type":"SearchAction","target":"https://kosovoscores.com/?q={search_term_string}","query-input":"required name=search_term_string"}}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Organization","name":"KosovoScores","url":"https://kosovoscores.com/","logo":"https://media.base44.com/images/public/69c340685dca7075d7622e15/702c80214_8c53466ae_logo.png","sameAs":["https://instagram.com/kosovoscores"]}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"SportsOrganization","name":"KosovoScores","url":"https://kosovoscores.com/","sport":"Soccer","description":"Real-time football scores, standings and match updates from Kosovo leagues: Superliga, Liga e Pare and Kupa e Kosoves.","memberOf":[{"@type":"SportsLeague","name":"ALBI MALL SUPERLIGA"},{"@type":"SportsLeague","name":"Liga e Pare"},{"@type":"SportsLeague","name":"Kupa e Kosoves"}]}
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3ZZ91VR5Y0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3ZZ91VR5Y0');
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // Capture beforeinstallprompt ASAP before React mounts
+      window.__pwaInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        window.__pwaInstallPrompt = e;
+      });
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

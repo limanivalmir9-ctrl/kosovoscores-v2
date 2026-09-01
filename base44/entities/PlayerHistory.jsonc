@@ -1,0 +1,84 @@
+{
+  "name": "PlayerHistory",
+  "type": "object",
+  "properties": {
+    "player_id": {
+      "type": "string",
+      "description": "Player entity ID this history belongs to"
+    },
+    "player_name": {
+      "type": "string",
+      "description": "Player name snapshot"
+    },
+    "club_id": {
+      "type": "string"
+    },
+    "club_name": {
+      "type": "string",
+      "description": "Destination club (tek klubi) \u2014 the club the player moved TO"
+    },
+    "club_logo": {
+      "type": "string",
+      "description": "Destination club logo URL"
+    },
+    "country": {
+      "type": "string",
+      "description": "Destination club country (name or ISO code) for flag display"
+    },
+    "from_club_id": {
+      "type": "string",
+      "description": "Origin club ID"
+    },
+    "from_club_name": {
+      "type": "string",
+      "description": "Origin club (nga klubi) \u2014 the club the player came FROM"
+    },
+    "from_club_logo": {
+      "type": "string",
+      "description": "Origin club logo URL"
+    },
+    "from_club_country": {
+      "type": "string",
+      "description": "Origin club country (name or ISO code) for flag display"
+    },
+    "season": {
+      "type": "string",
+      "description": "Season/year label e.g. 2023/24 (legacy single-string field)"
+    },
+    "year_from": {
+      "type": "number",
+      "description": "Year the player joined this club (career start year here)"
+    },
+    "year_to": {
+      "type": "number",
+      "description": "Year the player left this club (career end year here). Equal to year_from for a single-season spell."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "player_id",
+    "club_name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

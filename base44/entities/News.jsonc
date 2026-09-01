@@ -1,0 +1,51 @@
+{
+  "name": "News",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string",
+      "description": "Image URL"
+    },
+    "published": {
+      "type": "boolean",
+      "default": true
+    },
+    "season": {
+      "type": "string",
+      "description": "Season label for archived news e.g. 2025/2026"
+    },
+    "archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, this news belongs to an archived season"
+    }
+  },
+  "required": [
+    "title",
+    "content"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

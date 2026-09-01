@@ -1,0 +1,83 @@
+{
+  "name": "PushSubscription",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email i p\u00ebrdoruesit"
+    },
+    "endpoint": {
+      "type": "string",
+      "description": "Push endpoint URL"
+    },
+    "auth": {
+      "type": "string",
+      "description": "Auth key p\u00ebr encryption"
+    },
+    "p256dh": {
+      "type": "string",
+      "description": "Public key p\u00ebr encryption"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Browser user agent"
+    },
+    "favorite_club_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Club IDs that this user follows \u2014 only send push notifications for these clubs"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "user_email",
+    "endpoint"
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

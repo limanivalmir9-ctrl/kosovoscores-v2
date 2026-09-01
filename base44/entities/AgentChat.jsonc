@@ -1,0 +1,58 @@
+{
+  "name": "AgentChat",
+  "type": "object",
+  "properties": {
+    "match_id": {
+      "type": "string"
+    },
+    "match_code": {
+      "type": "string"
+    },
+    "sender": {
+      "type": "string",
+      "enum": [
+        "agent",
+        "admin"
+      ]
+    },
+    "agent_label": {
+      "type": "string",
+      "description": "Match teams label for identification"
+    },
+    "message": {
+      "type": "string"
+    },
+    "read_by_admin": {
+      "type": "boolean",
+      "default": false
+    },
+    "read_by_agent": {
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "match_id",
+    "sender",
+    "message"
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

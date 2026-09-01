@@ -1,0 +1,89 @@
+{
+  "name": "Competition",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Competition name"
+    },
+    "logo": {
+      "type": "string",
+      "description": "Competition logo URL"
+    },
+    "season": {
+      "type": "string",
+      "description": "Season e.g. 2024/25"
+    },
+    "color": {
+      "type": "string",
+      "description": "Border color for display"
+    },
+    "tier": {
+      "type": "number",
+      "description": "Competition tier (1=highest)",
+      "default": 1
+    },
+    "archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, this competition is archived (past season) and not shown as primary"
+    },
+    "hidden": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, this competition is hidden from the public site entirely (but remains in admin)"
+    },
+    "show_profiles": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, public club and player profiles for this competition are visible. If false, profiles are hidden."
+    },
+    "show_squad": {
+      "type": "boolean",
+      "default": true,
+      "description": "If false, the squad (players list) tab is hidden on the club profile page, but the club profile and matches remain visible."
+    },
+    "status_positions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Position status mappings for the standings table"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "name",
+    "season"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "name": "MatchEvent",
+  "type": "object",
+  "properties": {
+    "match_id": {
+      "type": "string"
+    },
+    "team": {
+      "type": "string",
+      "enum": [
+        "home",
+        "away"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "goal",
+        "own_goal",
+        "yellow_card",
+        "second_yellow",
+        "red_card",
+        "substitution",
+        "penalty_goal",
+        "var_canceled",
+        "missed_penalty",
+        "hydration",
+        "var_penalty_awarded",
+        "var_no_penalty"
+      ]
+    },
+    "minute": {
+      "type": "number"
+    },
+    "extra_time_minute": {
+      "type": "number",
+      "description": "Extra time minute (e.g. 3 for 45+3)"
+    },
+    "event_timestamp": {
+      "type": "number",
+      "description": "Exact ms timestamp when event occurred for precise ordering"
+    },
+    "player_name": {
+      "type": "string"
+    },
+    "player_id": {
+      "type": "string"
+    },
+    "assist_player_name": {
+      "type": "string"
+    },
+    "assist_player_id": {
+      "type": "string"
+    },
+    "player_out_name": {
+      "type": "string"
+    },
+    "player_out_id": {
+      "type": "string"
+    },
+    "player_in_name": {
+      "type": "string"
+    },
+    "player_in_id": {
+      "type": "string"
+    },
+    "is_penalty": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_own_goal": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_injury": {
+      "type": "boolean",
+      "default": false,
+      "description": "Substitution due to injury"
+    },
+    "cancellation_reason": {
+      "type": "string"
+    },
+    "home_score_after": {
+      "type": "number",
+      "description": "Home score immediately after this goal event"
+    },
+    "away_score_after": {
+      "type": "number",
+      "description": "Away score immediately after this goal event"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "match_id",
+    "team",
+    "type"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

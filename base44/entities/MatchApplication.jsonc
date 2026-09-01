@@ -1,0 +1,73 @@
+{
+  "name": "MatchApplication",
+  "type": "object",
+  "properties": {
+    "match_id": {
+      "type": "string"
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "agent_name": {
+      "type": "string"
+    },
+    "match_label": {
+      "type": "string",
+      "description": "Human-readable match label e.g. FC Prishtina vs FC Gjilani"
+    },
+    "match_date": {
+      "type": "string"
+    },
+    "match_time": {
+      "type": "string"
+    },
+    "competition_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Admin star rating 1-5 after match"
+    },
+    "is_confirmed_covered": {
+      "type": "boolean",
+      "default": false,
+      "description": "True only after admin rates and confirms the match was covered"
+    },
+    "proof_photo": {
+      "type": "string",
+      "description": "URL of proof photo uploaded by agent after covering the match"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "match_id",
+    "agent_id"
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

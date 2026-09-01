@@ -1,0 +1,59 @@
+{
+  "name": "Referee",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "photo": {
+      "type": "string",
+      "description": "Referee photo URL"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "Kryesor",
+        "Assistant 1",
+        "Assistant 2",
+        "VAR",
+        "AVAR",
+        "Gjyqtari i Kat\u00ebrt"
+      ]
+    },
+    "nationality": {
+      "type": "string",
+      "description": "Referee nationality (country name or ISO code)"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "description": "Date of birth (YYYY-MM-DD)"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "name",
+    "role"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

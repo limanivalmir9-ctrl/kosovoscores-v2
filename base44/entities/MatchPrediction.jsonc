@@ -1,0 +1,47 @@
+{
+  "name": "MatchPrediction",
+  "type": "object",
+  "properties": {
+    "match_id": {
+      "type": "string",
+      "description": "ID e ndeshjes"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Session ID i p\u00ebrdoruesit (anonim\u00eb)"
+    },
+    "vote": {
+      "type": "string",
+      "enum": [
+        "home",
+        "draw",
+        "away"
+      ],
+      "description": "Vota e p\u00ebrdoruesit"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "match_id",
+    "session_id",
+    "vote"
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

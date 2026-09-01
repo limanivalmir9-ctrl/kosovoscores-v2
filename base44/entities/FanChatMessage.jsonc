@@ -1,0 +1,97 @@
+{
+  "name": "FanChatMessage",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "username": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "avatar_color": {
+      "type": "string"
+    },
+    "avatar_emoji": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "message",
+        "admin_announcement",
+        "match_poll"
+      ],
+      "default": "message"
+    },
+    "match_id": {
+      "type": "string",
+      "description": "For match poll messages"
+    },
+    "match_label": {
+      "type": "string",
+      "description": "Label e ndeshjes"
+    },
+    "poll_votes": {
+      "type": "number",
+      "default": 0
+    },
+    "poll_voter_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reactions": {
+      "type": "object",
+      "description": "Emoji reactions {emoji: count}"
+    },
+    "reply_to_id": {
+      "type": "string",
+      "description": "ID of the message being replied to"
+    },
+    "reply_to_display_name": {
+      "type": "string",
+      "description": "Display name of quoted message author"
+    },
+    "reply_to_content": {
+      "type": "string",
+      "description": "Short preview of quoted message content"
+    },
+    "is_deleted": {
+      "type": "boolean",
+      "default": false
+    },
+    "deleted_by_admin": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "username",
+    "content"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

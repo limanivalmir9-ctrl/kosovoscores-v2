@@ -1,0 +1,65 @@
+{
+  "name": "Coach",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Full name"
+    },
+    "photo": {
+      "type": "string",
+      "description": "Coach photo URL"
+    },
+    "role": {
+      "type": "string",
+      "description": "Role e.g. Trajner Kryesor, Asistent, Trajner Portier\u00ebsh",
+      "default": "Trajner Kryesor"
+    },
+    "club_id": {
+      "type": "string",
+      "description": "Current club ID (optional)"
+    },
+    "club_name": {
+      "type": "string",
+      "description": "Current club name (snapshot)"
+    },
+    "nationality": {
+      "type": "string",
+      "description": "Nationality (country name or ISO code)"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "description": "Date of birth (YYYY-MM-DD)"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

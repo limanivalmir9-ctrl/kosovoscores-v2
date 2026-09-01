@@ -1,0 +1,75 @@
+{
+  "name": "DonationSettings",
+  "type": "object",
+  "properties": {
+    "paypal_url": {
+      "type": "string",
+      "description": "PayPal.me URL or donate link"
+    },
+    "binance_wallet": {
+      "type": "string",
+      "description": "Binance/crypto wallet address"
+    },
+    "binance_qr": {
+      "type": "string",
+      "description": "QR code image URL for Binance payment"
+    },
+    "binance_network": {
+      "type": "string",
+      "description": "e.g. BNB Smart Chain (BEP20)"
+    },
+    "sepa_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show SEPA bank transfer option"
+    },
+    "sepa_name": {
+      "type": "string",
+      "description": "Account holder name"
+    },
+    "sepa_iban": {
+      "type": "string",
+      "description": "IBAN number"
+    },
+    "sepa_bic": {
+      "type": "string",
+      "description": "BIC/SWIFT code"
+    },
+    "sepa_bank": {
+      "type": "string",
+      "description": "Bank name"
+    },
+    "sepa_reference": {
+      "type": "string",
+      "description": "Payment reference/description"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "name": "Player",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Full name"
+    },
+    "player_id": {
+      "type": "string",
+      "description": "Unique 6-digit player ID"
+    },
+    "number": {
+      "type": "number",
+      "description": "Jersey number"
+    },
+    "position": {
+      "type": "string",
+      "enum": [
+        "Goalkeeper",
+        "Defender",
+        "Midfielder",
+        "Forward"
+      ]
+    },
+    "photo": {
+      "type": "string",
+      "description": "Player photo URL"
+    },
+    "nationality": {
+      "type": "string",
+      "description": "Player nationality"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "description": "Date of birth (YYYY-MM-DD)"
+    },
+    "club_id": {
+      "type": "string",
+      "description": "Club ID. When empty/null, the player is a free agent stored in the Magazina (admin-only)."
+    },
+    "competition_id": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "If false, player is hidden from the public club squad list but remains visible (inactive) in the admin panel"
+    },
+    "injured": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, player is currently injured/out \u2014 a red medical plus badge is shown on the player profile, squad and affected played matches"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

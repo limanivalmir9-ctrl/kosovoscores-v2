@@ -1,0 +1,58 @@
+{
+  "name": "PlayerMatchMinutes",
+  "type": "object",
+  "properties": {
+    "match_id": {
+      "type": "string",
+      "description": "ID e ndeshjes"
+    },
+    "player_id": {
+      "type": "string",
+      "description": "ID e entitetit Player (entity ID)"
+    },
+    "player_name": {
+      "type": "string",
+      "description": "Emri i lojtarit (snapshot)"
+    },
+    "club_id": {
+      "type": "string",
+      "description": "ID e klubit q\u00eb luajti lojtari n\u00eb k\u00ebt\u00eb ndeshje"
+    },
+    "minutes": {
+      "type": "number",
+      "default": 0,
+      "description": "Minutat e luajtura n\u00eb k\u00ebt\u00eb ndeshje (vlera e rikalkuluar/manual)"
+    },
+    "recalc_date": {
+      "type": "number",
+      "description": "Timestamp i rikalkulimit"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "match_id",
+    "player_id"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

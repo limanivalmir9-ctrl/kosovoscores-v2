@@ -1,0 +1,58 @@
+{
+  "name": "TopScorer",
+  "type": "object",
+  "properties": {
+    "player_name": {
+      "type": "string"
+    },
+    "player_id": {
+      "type": "string",
+      "description": "Unique player ID for accurate tracking"
+    },
+    "photo": {
+      "type": "string"
+    },
+    "club_name": {
+      "type": "string"
+    },
+    "club_logo": {
+      "type": "string",
+      "description": "Club logo URL"
+    },
+    "competition_id": {
+      "type": "string"
+    },
+    "goals": {
+      "type": "number",
+      "default": 0
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "player_name",
+    "competition_id",
+    "goals"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "name": "Agent",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "username": {
+      "type": "string",
+      "description": "Login username (auto-set from first_name)"
+    },
+    "password_plain": {
+      "type": "string",
+      "description": "Auto-generated 8-char password"
+    },
+    "teams_covered": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Club IDs this agent covers"
+    },
+    "price_per_match": {
+      "type": "number",
+      "default": 0
+    },
+    "total_matches_covered": {
+      "type": "number",
+      "default": 0
+    },
+    "total_earnings": {
+      "type": "number",
+      "default": 0
+    },
+    "average_rating": {
+      "type": "number",
+      "default": 0,
+      "description": "Average star rating (1-5) from admin evaluations"
+    },
+    "archived_payments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "matches": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "History of archived payments"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "first_name",
+    "last_name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

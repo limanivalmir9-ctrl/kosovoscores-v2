@@ -1,0 +1,63 @@
+# KosovoScores — LLMs.txt
+# AI assistant context file. Describes the site, organization and content for LLMs.
+
+## Organization
+KosovoScores is the ultimate destination for real-time football scores, standings, and match updates from Superliga, Liga e Pare and Kupa e Kosoves. Based in Kosovo, covering all local Kosovo football leagues with live scores, fixtures, tables, top scorers, week stars and news.
+
+Schema (JSON-LD):
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "KosovoScores",
+  "url": "https://kosovoscores.com/",
+  "logo": "https://kosovoscores.com/favicon.svg",
+  "description": "KosovoScores.com is the ultimate destination for real-time football scores, standings, and match updates from Superliga, Liga e Pare and Kupa e Kosoves.",
+  "sameAs": []
+}
+
+## WebSite
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "KosovoScores",
+  "url": "https://kosovoscores.com/",
+  "inLanguage": "sq",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://kosovoscores.com/?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+
+## SportsOrganization
+KosovoScores operates as a sports media organization covering Kosovar football competitions.
+
+{
+  "@context": "https://schema.org",
+  "@type": "SportsOrganization",
+  "name": "KosovoScores",
+  "url": "https://kosovoscores.com/",
+  "sport": "Soccer",
+  "description": "Real-time football scores, standings and match updates from Kosovo leagues: Superliga, Liga e Pare and Kupa e Kosoves.",
+  "memberOf": [
+    {"@type": "SportsLeague", "name": "ALBI MALL SUPERLIGA"},
+    {"@type": "SportsLeague", "name": "Liga e Pare"},
+    {"@type": "SportsLeague", "name": "Kupa e Kosoves"}
+  ]
+}
+
+## Site sections
+- / — Live scores dashboard (today's matches across all leagues)
+- /ligat — All competitions / leagues
+- /ligat/:id — League detail (standings, fixtures, results)
+- /ndeshja/:slug — Match detail (live score, timeline, lineups, stats)
+- /top-scorers — Top goalscorers across leagues
+- /yjet-e-javes — Week stars (player of the week)
+- /kalendar — Match calendar (next 30 days)
+- /lajme — Football news
+- /live-scores — Live scores overview
+
+## Notes
+- Primary language: Albanian (sq)
+- Match URLs use slugs: /ndeshja/{hometeam}-vs-{awayteam}-{yyyy-mm-dd}
+- Sitemap: https://kosovoscores.com/sitemap.xml

@@ -1,0 +1,64 @@
+{
+  "name": "Trophy",
+  "type": "object",
+  "properties": {
+    "club_id": {
+      "type": "string",
+      "description": "ID e klubit"
+    },
+    "club_name": {
+      "type": "string",
+      "description": "Emri i klubit (p\u00ebr shfaqje)"
+    },
+    "competition_type": {
+      "type": "string",
+      "enum": [
+        "Ligen",
+        "Kupen",
+        "Superkupen"
+      ],
+      "description": "Lloji i kompeticionit: Ligen, Kupen, Superkupen"
+    },
+    "trophy_image": {
+      "type": "string",
+      "description": "Foto e trofeut"
+    },
+    "count": {
+      "type": "number",
+      "default": 1,
+      "description": "Numri i trofeve/titujve te fituar"
+    },
+    "season": {
+      "type": "string",
+      "description": "Sezoni i fitimit (opsionale)"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "club_id",
+    "competition_type",
+    "count"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

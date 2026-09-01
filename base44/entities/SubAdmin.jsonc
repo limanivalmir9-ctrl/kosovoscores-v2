@@ -1,0 +1,65 @@
+{
+  "name": "SubAdmin",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Emri i n\u00ebn-adminit"
+    },
+    "code1": {
+      "type": "string",
+      "description": "Kodi i par\u00eb i aksesit (6 shifra)"
+    },
+    "code2": {
+      "type": "string",
+      "description": "Kodi i dyt\u00eb i aksesit (6 shifra)"
+    },
+    "allowed_sections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Seksionet q\u00eb ky n\u00ebn-admin ka qasje: competitions, clubs, matches, referees, standings, news, top-scorers, ads, agents, matches-today, agent-chat, match-applications, transfer-players, donacion, contacts, analytics"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_login": {
+      "type": "string",
+      "description": "ISO timestamp i login-it t\u00eb fundit"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "name",
+    "code1",
+    "code2"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "AppSettings",
+  "type": "object",
+  "properties": {
+    "fanchat_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Afishimi i FanChat n\u00eb faqen publike"
+    },
+    "trophy_icon_ligen": {
+      "type": "string",
+      "description": "Ikona e p\u00ebrbashk\u00ebt e trofeut p\u00ebr garen 'Ligen' \u2014 p\u00ebrdoret automatikisht p\u00ebr \u00e7do titull t\u00eb klubeve"
+    },
+    "trophy_icon_kupen": {
+      "type": "string",
+      "description": "Ikona e p\u00ebrbashk\u00ebt e trofeut p\u00ebr garen 'Kupen'"
+    },
+    "trophy_icon_superkupen": {
+      "type": "string",
+      "description": "Ikona e p\u00ebrbashk\u00ebt e trofeut p\u00ebr garen 'Superkupen'"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

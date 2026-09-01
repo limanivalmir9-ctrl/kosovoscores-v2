@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /ks-panel-7k4m9
+Disallow: /ks-agentA26A02
+Disallow: /agent-portal
+Disallow: /match-feed
+
+Sitemap: https://kosovoscores.com/api/functions/sitemap

@@ -1,0 +1,92 @@
+{
+  "name": "FanChatUser",
+  "type": "object",
+  "properties": {
+    "username": {
+      "type": "string",
+      "description": "Unique username"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Display name in chat"
+    },
+    "email": {
+      "type": "string"
+    },
+    "password_hash": {
+      "type": "string",
+      "description": "Hashed password"
+    },
+    "avatar_color": {
+      "type": "string",
+      "description": "Random avatar bg color"
+    },
+    "avatar_emoji": {
+      "type": "string",
+      "description": "Chosen emoji avatar"
+    },
+    "email_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Email confirmed via link"
+    },
+    "is_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Approved by admin \u2014 required to access chat"
+    },
+    "verification_token": {
+      "type": "string"
+    },
+    "is_banned": {
+      "type": "boolean",
+      "default": false
+    },
+    "ban_reason": {
+      "type": "string"
+    },
+    "is_admin": {
+      "type": "boolean",
+      "default": false,
+      "description": "Can send admin messages"
+    },
+    "favorite_club": {
+      "type": "string"
+    },
+    "total_messages": {
+      "type": "number",
+      "default": 0
+    },
+    "last_seen": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "username",
+    "email",
+    "password_hash"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

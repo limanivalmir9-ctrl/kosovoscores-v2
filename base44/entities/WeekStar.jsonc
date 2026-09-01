@@ -1,0 +1,63 @@
+{
+  "name": "WeekStar",
+  "type": "object",
+  "properties": {
+    "week_number": {
+      "type": "number",
+      "description": "Numri i jav\u00ebs (round)"
+    },
+    "competition_id": {
+      "type": "string",
+      "description": "ID e kompeticionit (ALBI MALL SUPERLIGA)"
+    },
+    "player_id": {
+      "type": "string",
+      "description": "ID e entitetit Player"
+    },
+    "player_name": {
+      "type": "string",
+      "description": "Emri dhe mbiemri i lojtarit"
+    },
+    "player_photo": {
+      "type": "string",
+      "description": "Foto e lojtarit"
+    },
+    "club_id": {
+      "type": "string"
+    },
+    "club_name": {
+      "type": "string"
+    },
+    "club_logo": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description (up to 1000 characters)"
+    }
+  },
+  "required": [
+    "week_number",
+    "player_id",
+    "player_name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
