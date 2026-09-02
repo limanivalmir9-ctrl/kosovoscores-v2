@@ -1,4 +1,6 @@
-// CompetitionDetail.jsx - FIX PER 0:0 ne vend te 16:00
+// CompetitionDetail.jsx - FIX FINAL per 0:0 dhe 16:30
+// LOGJIKA: Nese status == full_time/official_result -> shfaq rezultatin EDHE nese eshte 0:0
+// Nese status == scheduled -> shfaq oren
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
@@ -76,13 +78,17 @@ export default function CompetitionDetail() {
     } catch { return "transparent"; }
   };
 
-  // FIX KRYESOR: Kontrollo statusin, jo vetem score!
+  // FIX KRYESOR - LOGJIKA E SAKTE
   const isMatchFinished = (m) => {
-    const st = (m.status || "").toLowerCase();
-    // Nese status eshte scheduled, postponed, ns, etj -> nuk eshte e luajtur
-    if (st.includes("sched") || st === "ns" || st.includes("post") || st.includes("cancel")) return false;
-    if (st === "ft" || st === "finished" || st === "live" || st.includes("half")) return true;
-    // Fallback: nese ka minute >0 ose ka events, konsideroje te luajtur
+    const st = (m.status || "").toLowerCase().trim();
+    // 1. Nese status eshte qarte i perfunduar -> perfunduar
+    if (st === "full_time" || st === "fulltime" || st === "ft" || st === "finished" || st === "official_result" || st === "official") return true;
+    if (st.includes("full") || st.includes("official")) return true;
+    // 2. Nese eshte live
+    if (st.includes("live") || st.includes("half") || st.includes("1h") || st.includes("2h") || st.includes("ht")) return true;
+    // 3. Nese eshte scheduled/postponed/ns -> nuk eshte perfunduar
+    if (st === "scheduled" || st === "ns" || st.includes("sched") || st.includes("post") || st.includes("cancel")) return false;
+    // 4. Fallback: nese ka minute >0, eshte live/perfunduar
     if ((m.minute||0) > 0) return true;
     return false;
   };
@@ -163,15 +169,16 @@ export default function CompetitionDetail() {
                     const homeLogo = m.home_team_logo || clubs.find(c=>c.id===m.home_team_id)?.logo || "";
                     const awayLogo = m.away_team_logo || clubs.find(c=>c.id===m.away_team_id)?.logo || "";
                     const finished = isMatchFinished(m);
+                    const showAsFinished = finished; // Edhe 0:0 nese eshte full_time -> shfaq 0:0
                     return (
                       <Link key={m.id} to={`/ndeshja/${m.id}`} style={{textDecoration:"none", color:"inherit"}}>
                         <div style={{background:"white", borderRadius:18, padding:"18px 16px 14px", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", position:"relative", border:"1px solid #f1f5f9"}}>
-                          <div style={{position:"absolute", top:12, right:12, opacity:0.35}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 6 5 6 10H0s6-3 6-10"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><line x1="2" y1="2" x2="22" y2="22"/></svg></div>
+                          <div style={{position:"absolute", top:12, right:12, opacity:0.35}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 6 5 6 10H0s6-3 6-10"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
                           <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", gap:8}}>
                             <div style={{display:"flex", flexDirection:"column", alignItems:"center", flex:1, gap:8}}><img src={homeLogo} alt={m.home_team_name} style={{width:56, height:56, objectFit:"contain"}} /><span style={{fontSize:12, fontWeight:800, textAlign:"center"}}>{m.home_team_name}</span></div>
                             <div style={{display:"flex", flexDirection:"column", alignItems:"center", minWidth:90, gap:2}}>
-                              {finished ? (
-                                <div style={{display:"flex", alignItems:"center", gap:8, background:"#f1f5f9", padding:"6px 14px", borderRadius:10, fontSize:16, fontWeight:800}}>{m.home_score} : {m.away_score}</div>
+                              {showAsFinished ? (
+                                <div style={{display:"flex", alignItems:"center", gap:8, background:"#f1f5f9", padding:"6px 14px", borderRadius:10, fontSize:16, fontWeight:800}}>{m.home_score ?? 0} : {m.away_score ?? 0}</div>
                               ) : (
                                 <>
                                   <div style={{fontSize:15, fontWeight:800, color:"#0f172a"}}>{m.time || "16:00"}</div>
