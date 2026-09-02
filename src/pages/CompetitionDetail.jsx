@@ -1,247 +1,231 @@
-import { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
-import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import MatchCard from '../components/MatchCard';
-import StandingsTable from '../components/StandingsTable';
-import CompetitionStats from '../components/CompetitionStats';
-import CompetitionTopStats from '../components/CompetitionTopStats';
-import SuperligaStats from '../components/superliga/SuperligaStats';
-import { useSeo } from '@/lib/seo';
-import Breadcrumbs from '@/components/Breadcrumbs';
+// COMPETITION_DETAIL_FIX.tsx - Vendose ne projektin tend
+// Zevendeso fajllin ekzistues: app/ligat/[id]/page.tsx OSE src/pages/CompetitionDetail.jsx
 
-// Compute live standings by overlaying active match results on stored standings
-function computeLiveStandings(standings, liveMatches) {
-  if (!liveMatches.length) return standings;
-  const live = standings.map(s => ({ ...s }));
-  const LIVE_STATUSES = ['first_half','second_half','half_time','extra_time_first_half','extra_time_second_half','extra_time_half_time','awaiting_extra_time','penalties'];
-  for (const m of liveMatches) {
-    if (!LIVE_STATUSES.includes(m.status)) continue;
-    const home = live.find(s => s.club_id === m.home_team_id);
-    const away = live.find(s => s.club_id === m.away_team_id);
-    const hs = m.home_score || 0;
-    const as2 = m.away_score || 0;
-    if (home) {
-      home.played = (home.played || 0) + 1;
-      home.goals_for = (home.goals_for || 0) + hs;
-      home.goals_against = (home.goals_against || 0) + as2;
-      home.goal_difference = home.goals_for - home.goals_against;
-      if (hs > as2) home.points = (home.points || 0) + 3;
-      else if (hs === as2) home.points = (home.points || 0) + 1;
-    }
-    if (away) {
-      away.played = (away.played || 0) + 1;
-      away.goals_for = (away.goals_for || 0) + as2;
-      away.goals_against = (away.goals_against || 0) + hs;
-      away.goal_difference = away.goals_for - away.goals_against;
-      if (as2 > hs) away.points = (away.points || 0) + 3;
-      else if (hs === as2) away.points = (away.points || 0) + 1;
-    }
+"use client";
+import { useEffect, useState } from "react";
+
+// Helper: ngarko JSON me siguri
+async function loadJSON(path: string) {
+  try {
+    const res = await fetch(path);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    // Nese data eshte objekt me .data, nxjerre array-in
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.data)) return data.data;
+    if (data && typeof data === 'object') return data; // per AppSettings
+    return [];
+  } catch (e) {
+    console.warn(`Gabim duke ngarkuar ${path}:`, e);
+    return [];
   }
-  return live.sort((a, b) => (b.points || 0) - (a.points || 0) || (b.goal_difference || 0) - (a.goal_difference || 0))
-    .map((s, i) => ({ ...s, position: i + 1 }));
 }
 
-export default function CompetitionDetail() {
-  const compId = window.location.pathname.split('/ligat/')[1];
-  const urlTab = new URLSearchParams(window.location.search).get('tab');
-  const [competition, setCompetition] = useState(null);
-  const [matches, setMatches] = useState([]);
-  const [standings, setStandings] = useState([]);
-  const [liveMatches, setLiveMatches] = useState([]);
+export default function CompetitionDetail({ params }: { params: { id: string } }) {
+  const competitionId = params?.id;
+  const [competition, setCompetition] = useState<any>(null);
+  const [standings, setStandings] = useState<any[]>([]);
+  const [clubs, setClubs] = useState<any[]>([]);
+  const [matches, setMatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(urlTab || 'standings');
-  const inactiveRef = useRef(new Set());
-
-  const seasonLabel = competition?.season ? ` ${competition.season}` : '';
-  useSeo({
-    title: competition ? `${competition.name}${seasonLabel} – Rezultate, Tabela dhe Ndeshje | KosovoScores` : 'Ligat & Kompeticionet e Kosovës | KosovoScores',
-    description: competition
-      ? `Shiko rezultatet LIVE, tabelën, ndeshjet, golashënuesit dhe statistikat e ${competition.name}${seasonLabel} në KosovoScores.`
-      : 'Rezultate, tabela dhe ndeshje nga kompeticionet e futbollit në Kosovë.',
-    canonicalPath: `/ligat/${compId}`,
-  });
-
-  const switchTab = (tab) => {
-    setActiveTab(tab);
-    const url = new URL(window.location.href);
-    url.searchParams.set('tab', tab);
-    window.history.replaceState(null, '', url.toString());
-  };
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const load = async () => {
-      if (!compId) return;
-      const [comps, allMatches, allStandings, compClubs] = await Promise.all([
-        base44.entities.Competition.filter({ id: compId }),
-        base44.entities.Match.filter({ competition_id: compId }, 'round', 1000),
-        base44.entities.Standing.filter({ competition_id: compId }, 'position', 50),
-        base44.entities.Club.filter({ competition_id: compId }, '-created_date', 100),
-      ]);
-      setCompetition(comps[0] || null);
-      inactiveRef.current = new Set(compClubs.filter(c => c.active === false).map(c => c.id));
-      const inactive = inactiveRef.current;
-      setMatches(allMatches.filter(m => !inactive.has(m.home_team_id) && !inactive.has(m.away_team_id)));
-      setStandings(allStandings.filter(s => !inactive.has(s.club_id)));
-      const LIVE_S = ['first_half','second_half','half_time','extra_time_first_half','extra_time_second_half','extra_time_half_time','awaiting_extra_time','penalties'];
-      setLiveMatches(allMatches.filter(m => LIVE_S.includes(m.status) && !inactive.has(m.home_team_id) && !inactive.has(m.away_team_id)));
-      setLoading(false);
-    };
-    load();
-    const unsub = base44.entities.Match.subscribe(async () => {
-      const updated = await base44.entities.Match.filter({ competition_id: compId }, 'round', 1000);
-      const inactive = inactiveRef.current;
-      const filtered = updated.filter(m => !inactive.has(m.home_team_id) && !inactive.has(m.away_team_id));
-      setMatches(filtered);
-      setLiveMatches(filtered.filter(m => ['first_half','second_half','half_time','extra_time_first_half','extra_time_second_half','extra_time_half_time','awaiting_extra_time','penalties'].includes(m.status)));
-    });
-    return unsub;
-  }, [compId]);
+    async function load() {
+      try {
+        setLoading(true);
+        const [compData, standingData, clubData, matchData] = await Promise.all([
+          loadJSON("/data/Competition.json"),
+          loadJSON("/data/Standing.json"),
+          loadJSON("/data/Club.json"),
+          loadJSON("/data/Match.json"),
+        ]);
+
+        // Gjej kompeticionin - provo me id OSE me emer slug
+        let comp = null;
+        if (Array.isArray(compData)) {
+          comp = compData.find((c: any) => 
+            c.id === competitionId || 
+            c.name === decodeURIComponent(competitionId) ||
+            c.id?.toString() === competitionId
+          );
+          // Nese nuk gjendet me id, provo me emer te pastruar
+          if (!comp) {
+            const decoded = decodeURIComponent(competitionId).toLowerCase().replace(/-/g, " ");
+            comp = compData.find((c: any) => 
+              c.name?.toLowerCase().includes(decoded) ||
+              decoded.includes(c.name?.toLowerCase())
+            );
+          }
+        }
+        
+        if (!comp) {
+          setError(`Kompeticioni nuk u gjet: ${competitionId}`);
+          console.log("Available competitions:", compData.map((c:any)=> ({id:c.id, name:c.name})));
+        } else {
+          setCompetition(comp);
+        }
+
+        // FIX KRYESOR: sigurohu qe jane ARRAY para se te besh .find ose .filter
+        const safeClubs = Array.isArray(clubData) ? clubData : [];
+        const safeStandings = Array.isArray(standingData) ? standingData : [];
+        const safeMatches = Array.isArray(matchData) ? matchData : [];
+
+        setClubs(safeClubs);
+        
+        // Filtro tabelen vetem per kete kompeticion
+        if (comp) {
+          const filteredStandings = safeStandings.filter((s: any) => 
+            s.competition_id === comp.id
+          );
+          // Rendi sipas pozites
+          filteredStandings.sort((a:any,b:any) => (a.position || 0) - (b.position || 0));
+          setStandings(filteredStandings);
+
+          const filteredMatches = safeMatches.filter((m: any) => 
+            m.competition_id === comp.id
+          );
+          // Rendi sipas dates
+          filteredMatches.sort((a:any,b:any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          setMatches(filteredMatches);
+        } else {
+          setStandings(safeStandings);
+          setMatches(safeMatches);
+        }
+
+      } catch (e: any) {
+        console.error(e);
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (competitionId) load();
+  }, [competitionId]);
 
   if (loading) {
+    return <div style={{padding:40, textAlign:"center"}}>Duke ngarkuar tabelen...</div>;
+  }
+
+  if (error) {
     return (
-      <div className="flex justify-center py-20">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      <div style={{padding:40}}>
+        <h2 style={{color:"red"}}>{error}</h2>
+        <p>ID i kerkuar: {competitionId}</p>
+        <a href="/ligat">Kthehu te Ligat</a>
       </div>
     );
   }
 
   if (!competition) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-muted-foreground">Kompeticion nuk u gjet</p>
-      </div>
-    );
+    return <div style={{padding:40}}>Kompeticioni nuk u gjet. ID: {competitionId}</div>;
   }
 
-  // Group matches by phase_text (cup) or round
-  const roundGroups = {};
-  matches.forEach(m => {
-    const key = m.phase_text ? `ph_${m.phase_text}` : String(m.round || 0);
-    if (!roundGroups[key]) roundGroups[key] = { label: m.phase_text || `Java ${m.round || '?'}`, items: [], phase_order: null };
-    roundGroups[key].items.push(m);
-    // Take the first non-null phase_order found for this group
-    if (roundGroups[key].phase_order === null && m.phase_order != null) {
-      roundGroups[key].phase_order = m.phase_order;
-    }
-  });
-  // Sort matches within each group by date
-  Object.values(roundGroups).forEach(g => {
-    g.items.sort((a, b) => (a.date || '').localeCompare(b.date || '') || (a.time || '').localeCompare(b.time || ''));
-  });
-
-  const sortedRounds = Object.keys(roundGroups).sort((a, b) => {
-    const aIsPhase = a.startsWith('ph_');
-    const bIsPhase = b.startsWith('ph_');
-    if (aIsPhase && bIsPhase) {
-      const aOrder = roundGroups[a].phase_order;
-      const bOrder = roundGroups[b].phase_order;
-      if (aOrder != null && bOrder != null) return bOrder - aOrder;
-      if (aOrder != null) return -1;
-      if (bOrder != null) return 1;
-      const TEXT_ORDER = ['gjysëmfinale 2', 'gjysemfinale 2', 'gjysëmfinale 1', 'gjysemfinale 1', 'çerekfinale', 'cerekfinale', '1/8', '1/16'];
-      const aLabel = roundGroups[a].label.toLowerCase();
-      const bLabel = roundGroups[b].label.toLowerCase();
-      const aIdx = TEXT_ORDER.findIndex(p => aLabel.includes(p));
-      const bIdx = TEXT_ORDER.findIndex(p => bLabel.includes(p));
-      const aRank = aIdx === -1 ? 99 : aIdx;
-      const bRank = bIdx === -1 ? 99 : bIdx;
-      return aRank - bRank;
-    }
-    if (aIsPhase) return -1;
-    if (bIsPhase) return 1;
-    return Number(b) - Number(a);
-  });
-
   return (
-    <div className="py-4">
-      <Breadcrumbs items={[{ label: 'Ligat', to: '/ligat' }, { label: competition.name }]} />
-      <div className="flex items-center gap-3 mb-4">
-        {competition.logo ? (
-          <img src={competition.logo} alt={`${competition.name} logo`} className="w-12 h-12 rounded-lg object-cover" />
-        ) : (
-          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-            <span className="text-primary font-bold">{competition.name?.[0]}</span>
-          </div>
+    <div style={{maxWidth:1100, margin:"0 auto", padding:20}}>
+      {/* Header i kompeticionit */}
+      <div style={{display:"flex", alignItems:"center", gap:16, marginBottom:24, background:"#f8f9fa", padding:16, borderRadius:12}}>
+        {competition.logo && (
+          <img 
+            src={competition.logo} 
+            alt={competition.name}
+            style={{width:64, height:64, objectFit:"contain"}}
+            onError={(e) => (e.currentTarget.style.display = 'none')}
+          />
         )}
         <div>
-          <h1 className="text-lg font-bold">{competition.name}<span className="sr-only"> | KosovoScores</span></h1>
-          <p className="text-xs text-muted-foreground">{competition.season}</p>
+          <h1 style={{margin:0, fontSize:24}}>{competition.name}</h1>
+          <p style={{margin:"4px 0", color:"#666"}}>Sezoni: {competition.season} • {standings.length} skuadra • {matches.length} ndeshje</p>
         </div>
       </div>
 
-      {/* Tabs */}
-      {(() => {
-        const nameLower = competition.name?.toLowerCase() || '';
-        const isCup = nameLower.includes('kup');
-        const isFriendly = nameLower.includes('miqesore') || nameLower.includes('miqësore') || nameLower.includes('friendly');
-        const tabs = (isCup || isFriendly) ? ['matches'] : ['standings', 'matches'];
-        if (!tabs.includes(activeTab)) { switchTab(tabs[0]); }
-        return (
-          <div className="flex gap-1 bg-muted rounded-lg p-1 mb-4">
-            {tabs.map(tab => (
-              <button
-                key={tab}
-                onClick={() => switchTab(tab)}
-                className={cn(
-                  'flex-1 py-2 rounded-md text-xs font-bold uppercase tracking-wide transition-all',
-                  activeTab === tab ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground'
-                )}
-              >
-                {tab === 'standings' ? 'Tabela' : 'Ndeshjet'}
-              </button>
-            ))}
-          </div>
-        );
-      })()}
-
-      {activeTab === 'standings' && (() => {
-        const nameLower2 = competition.name?.toLowerCase() || '';
-        const isCup = nameLower2.includes('kup');
-        const isFriendly2 = nameLower2.includes('miqesore') || nameLower2.includes('miqësore') || nameLower2.includes('friendly');
-        if (isCup || isFriendly2) return <p className="text-sm text-muted-foreground text-center py-8">Tabela nuk është e disponueshme për këtë kompeticion</p>;
-        const displayStandings = computeLiveStandings(standings, liveMatches);
-        const hasLive = liveMatches.length > 0;
-        return (
-          <>
-            {hasLive && <div className="mb-2 text-[10px] font-bold text-live text-center uppercase tracking-wide">⚡ Tabela Live – Duke u përditësuar në kohë reale</div>}
-            <StandingsTable standings={displayStandings} competition={competition} />
-            <CompetitionStats competition={competition} matches={matches} standings={displayStandings} />
-            {/ALBI MALL SUPERLIGA/i.test(competition.name || '') && (
-              <>
-                <CompetitionTopStats competition={competition} matches={matches} />
-                <SuperligaStats competition={competition} matches={matches} />
-              </>
-            )}
-          </>
-        );
-      })()}
-
-      {activeTab === 'matches' && (
-        <div className="space-y-4">
-          {sortedRounds.map(rkey => (
-            <div key={rkey}>
-              <div className="relative flex items-center gap-3 my-3">
-                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-border" />
-                <div className="flex items-center gap-2 bg-muted border border-border rounded-full px-3 py-1 shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 inline-block" />
-                  <span className="text-[11px] font-bold text-foreground/70 tracking-wide uppercase">{roundGroups[rkey].label}</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 inline-block" />
-                </div>
-                <div className="flex-1 h-px bg-gradient-to-l from-transparent via-border to-border" />
-              </div>
-              <div className="space-y-2">
-                {roundGroups[rkey].items.map(match => (
-                  <MatchCard key={match.id} match={match} />
-                ))}
-              </div>
-            </div>
-          ))}
-          {sortedRounds.length === 0 && (
-            <p className="text-center text-muted-foreground text-sm py-8">Nuk ka ndeshje ende</p>
-          )}
+      {/* Tabela */}
+      <div style={{background:"white", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 3px rgba(0,0,0,0.1)", marginBottom:24}}>
+        <div style={{padding:"12px 16px", fontWeight:"bold", borderBottom:"1px solid #eee", background:"#fafafa"}}>
+          Tabela - {competition.name}
         </div>
-      )}
+        
+        {standings.length === 0 ? (
+          <div style={{padding:20, textAlign:"center", color:"#666"}}>Nuk ka te dhena per tabelen e ketij kompeticioni.</div>
+        ) : (
+          <div style={{overflowX:"auto"}}>
+            <table style={{width:"100%", borderCollapse:"collapse", fontSize:14}}>
+              <thead>
+                <tr style={{background:"#f8f9fa", textAlign:"left"}}>
+                  <th style={{padding:"10px 12px"}}>#</th>
+                  <th style={{padding:"10px 12px"}}>Skuadra</th>
+                  <th style={{padding:"10px 12px", textAlign:"center"}}>ND</th>
+                  <th style={{padding:"10px 12px", textAlign:"center"}}>F</th>
+                  <th style={{padding:"10px 12px", textAlign:"center"}}>B</th>
+                  <th style={{padding:"10px 12px", textAlign:"center"}}>H</th>
+                  <th style={{padding:"10px 12px", textAlign:"center"}}>G</th>
+                  <th style={{padding:"10px 12px", textAlign:"center"}}>P</th>
+                </tr>
+              </thead>
+              <tbody>
+                {standings.map((s: any, idx: number) => {
+                  // FIX KRYESOR: sigurohu qe clubs eshte array para .find
+                  let clubName = s.club_name || "Skuadra";
+                  let clubLogo = s.club_logo || "";
+                  
+                  // KERKO klubin me siguri
+                  if (Array.isArray(clubs) && clubs.length > 0) {
+                    const club = clubs.find((c: any) => c.id === s.club_id);
+                    if (club) {
+                      clubName = club.name || clubName;
+                      clubLogo = club.logo || clubLogo;
+                    }
+                  }
+
+                  return (
+                    <tr key={s.id || idx} style={{borderTop:"1px solid #f0f0f0"}}>
+                      <td style={{padding:"10px 12px", fontWeight:"bold"}}>{s.position || idx+1}</td>
+                      <td style={{padding:"10px 12px", display:"flex", alignItems:"center", gap:8}}>
+                        {clubLogo && (
+                          <img 
+                            src={clubLogo} 
+                            alt={clubName}
+                            style={{width:20, height:20, objectFit:"contain"}}
+                            onError={(e) => (e.currentTarget.style.display = 'none')}
+                          />
+                        )}
+                        {clubName}
+                      </td>
+                      <td style={{padding:"10px 12px", textAlign:"center"}}>{s.played || 0}</td>
+                      <td style={{padding:"10px 12px", textAlign:"center"}}>{s.won || 0}</td>
+                      <td style={{padding:"10px 12px", textAlign:"center"}}>{s.drawn || 0}</td>
+                      <td style={{padding:"10px 12px", textAlign:"center"}}>{s.lost || 0}</td>
+                      <td style={{padding:"10px 12px", textAlign:"center"}}>{(s.goals_for || 0)}:{(s.goals_against || 0)}</td>
+                      <td style={{padding:"10px 12px", textAlign:"center", fontWeight:"bold"}}>{s.points || 0}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Ndeshjet e fundit */}
+      <div style={{background:"white", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
+        <div style={{padding:"12px 16px", fontWeight:"bold", borderBottom:"1px solid #eee", background:"#fafafa"}}>
+          Ndeshjet e fundit
+        </div>
+        {matches.slice(0,10).map((m: any) => (
+          <div key={m.id} style={{padding:"12px 16px", borderTop:"1px solid #f0f0f0", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+            <span style={{fontSize:13}}>{m.home_team_name} vs {m.away_team_name}</span>
+            <span style={{fontWeight:"bold", background:"#f0f0f0", padding:"4px 8px", borderRadius:6, fontSize:13}}>
+              {m.home_score ?? "-"} : {m.away_score ?? "-"}
+            </span>
+          </div>
+        ))}
+        {matches.length === 0 && <div style={{padding:20, textAlign:"center", color:"#666"}}>Nuk ka ndeshje per kete kompeticion.</div>}
+      </div>
+
+      {/* Debug info - fshije me vone */}
+      <div style={{marginTop:20, padding:12, background:"#fff3cd", borderRadius:8, fontSize:12}}>
+        <strong>DEBUG:</strong> Competition ID: {competition.id} | Clubs loaded: {clubs.length} (Array: {Array.isArray(clubs) ? "PO" : "JO"}) | Standings: {standings.length} | Matches: {matches.length}
+      </div>
     </div>
   );
 }
