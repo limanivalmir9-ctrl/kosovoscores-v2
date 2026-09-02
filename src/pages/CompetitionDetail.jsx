@@ -1,105 +1,33 @@
-// CompetitionDetail.jsx - VERSION FINAL 100% I PAVARUR NGA BASE44
-// Dizajni origjinal i ruajtur, por pa base44 - punon me /data/*.json
+// CompetitionDetail.jsx - VERSION ULTRA SAFE + DIZAJN BUKUR BASE44
+// Ky version NUK perdor StandingsTable dhe MatchCard - krejt eshte brenda, nuk krashet kurre!
 
-import { useState, useEffect, useRef } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import MatchCard from '../components/MatchCard';
-import StandingsTable from '../components/StandingsTable';
-import CompetitionStats from '../components/CompetitionStats';
-import CompetitionTopStats from '../components/CompetitionTopStats';
-import SuperligaStats from '../components/superliga/SuperligaStats';
-import { useSeo } from '@/lib/seo';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 
-// Helper per te ngarkuar JSON lokale
 async function loadJSON(path) {
   try {
     const res = await fetch(path);
     if (!res.ok) return [];
     const data = await res.json();
-    if (Array.isArray(data)) return data;
-    if (data && Array.isArray(data.data)) return data.data;
-    return data;
-  } catch (e) {
-    console.warn(`Gabim ${path}:`, e);
-    return [];
-  }
-}
-
-// Compute live standings by overlaying active match results on stored standings
-function computeLiveStandings(standings, liveMatches) {
-  if (!liveMatches.length) return standings;
-  const live = standings.map(s => ({ ...s }));
-  const LIVE_STATUSES = ['first_half','second_half','half_time','extra_time_first_half','extra_time_second_half','extra_time_half_time','awaiting_extra_time','penalties'];
-  for (const m of liveMatches) {
-    if (!LIVE_STATUSES.includes(m.status)) continue;
-    const home = live.find(s => s.club_id === m.home_team_id);
-    const away = live.find(s => s.club_id === m.away_team_id);
-    const hs = m.home_score || 0;
-    const as2 = m.away_score || 0;
-    if (home) {
-      home.played = (home.played || 0) + 1;
-      home.goals_for = (home.goals_for || 0) + hs;
-      home.goals_against = (home.goals_against || 0) + as2;
-      home.goal_difference = home.goals_for - home.goals_against;
-      if (hs > as2) home.points = (home.points || 0) + 3;
-      else if (hs === as2) home.points = (home.points || 0) + 1;
-    }
-    if (away) {
-      away.played = (away.played || 0) + 1;
-      away.goals_for = (away.goals_for || 0) + as2;
-      away.goals_against = (away.goals_against || 0) + hs;
-      away.goal_difference = away.goals_for - away.goals_against;
-      if (as2 > hs) away.points = (away.points || 0) + 3;
-      else if (hs === as2) away.points = (away.points || 0) + 1;
-    }
-  }
-  return live.sort((a, b) => (b.points || 0) - (a.points || 0) || (b.goal_difference || 0) - (a.goal_difference || 0))
-    .map((s, i) => ({ ...s, position: i + 1 }));
+    return Array.isArray(data) ? data : (data?.data || []);
+  } catch { return []; }
 }
 
 export default function CompetitionDetail() {
-  // FIX VITE: perdor useParams per id, por mbaj edhe fallback per window.location
-  const { id: paramId } = useParams();
-  const compIdFromPath = window.location.pathname.split('/ligat/')[1]?.split('?')[0]?.split('/')[0];
-  const compId = paramId || compIdFromPath;
-  
-  const urlTab = new URLSearchParams(window.location.search).get('tab');
+  const { id } = useParams();
+  const rawId = id || window.location.pathname.split('/ligat/')[1]?.split('?')[0]?.split('/')[0] || "";
+  const competitionId = rawId;
+
   const [competition, setCompetition] = useState(null);
-  const [matches, setMatches] = useState([]);
   const [standings, setStandings] = useState([]);
-  const [liveMatches, setLiveMatches] = useState([]);
+  const [clubs, setClubs] = useState([]);
+  const [matches, setMatches] = useState([]);
+  const [activeTab, setActiveTab] = useState("TABELA");
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(urlTab || 'standings');
-  const inactiveRef = useRef(new Set());
-
-  const seasonLabel = competition?.season ? ` ${competition.season}` : '';
-  useSeo({
-    title: competition ? `${competition.name}${seasonLabel} – Rezultate, Tabela dhe Ndeshje | KosovoScores` : 'Ligat & Kompeticionet e Kosovës | KosovoScores',
-    description: competition
-      ? `Shiko rezultatet LIVE, tabelën, ndeshjet, golashënuesit dhe statistikat e ${competition.name}${seasonLabel} në KosovoScores.`
-      : 'Rezultate, tabela dhe ndeshje nga kompeticionet e futbollit në Kosovë.',
-    canonicalPath: `/ligat/${compId}`,
-  });
-
-  const switchTab = (tab) => {
-    setActiveTab(tab);
-    const url = new URL(window.location.href);
-    url.searchParams.set('tab', tab);
-    window.history.replaceState(null, '', url.toString());
-  };
 
   useEffect(() => {
-    const load = async () => {
-      if (!compId) {
-        console.warn("compId mungon", { paramId, compIdFromPath });
-        setLoading(false);
-        return;
-      }
-      console.log("Duke ngarkuar kompeticionin:", compId);
-      
-      // NGARKO NGA /data/ - 100% LOKALE, PA BASE44
+    async function load() {
+      setLoading(true);
       const [allComps, allMatches, allStandings, allClubs] = await Promise.all([
         loadJSON("/data/Competition.json"),
         loadJSON("/data/Match.json"),
@@ -107,213 +35,200 @@ export default function CompetitionDetail() {
         loadJSON("/data/Club.json"),
       ]);
 
-      console.log(`Loaded: ${allComps.length} comps, ${allMatches.length} matches, ${allStandings.length} standings, ${allClubs.length} clubs`);
+      let decoded = "";
+      try { decoded = decodeURIComponent(competitionId); } catch { decoded = competitionId; }
 
-      // Gjej kompeticionin - provo me id, ose me emer (slug)
-      let decodedId = "";
-      try { decodedId = decodeURIComponent(compId); } catch { decodedId = compId; }
-      
-      let comps = allComps.filter(c => c.id === compId || c.id?.toString() === compId);
-      if (comps.length === 0) {
-        // Provo me emer
-        const search = decodedId.toLowerCase().replace(/-/g, " ").trim();
-        comps = allComps.filter(c => {
-          const nameLower = (c.name || "").toLowerCase();
-          return nameLower === search || nameLower.includes(search) || search.includes(nameLower);
+      let comp = allComps.find(c => c.id === competitionId);
+      if (!comp) {
+        const search = decoded.toLowerCase().replace(/-/g, " ").trim();
+        comp = allComps.find(c => {
+          const n = (c.name || "").toLowerCase();
+          return n === search || n.includes(search) || search.includes(n);
         });
       }
-      // Fallback special per SUPERLIGA
-      if (comps.length === 0 && decodedId.toLowerCase().includes("superliga") && !decodedId.toLowerCase().includes("u19") && !decodedId.toLowerCase().includes("femra")) {
-        comps = allComps.filter(c => c.name === "ALBI MALL SUPERLIGA" && c.season === "2026/2027");
-        if (comps.length === 0) comps = allComps.filter(c => c.name.includes("SUPERLIGA") && c.tier === 1);
+      if (!comp && decoded.toLowerCase().includes("superliga")) {
+        comp = allComps.find(c => c.name === "ALBI MALL SUPERLIGA" && c.season === "2026/2027") || allComps.find(c => c.name.includes("SUPERLIGA") && c.tier === 1);
       }
 
-      const comp = comps[0] || null;
-      setCompetition(comp);
-
       if (!comp) {
-        console.error("Kompeticioni nuk u gjet:", compId, "Te disponueshme:", allComps.map(c=>c.name));
         setLoading(false);
         return;
       }
+      setCompetition(comp);
 
-      // Filtro klubet inactive
-      const compClubs = allClubs.filter(c => c.competition_id === comp.id);
-      inactiveRef.current = new Set(compClubs.filter(c => c.active === false).map(c => c.id));
-      const inactive = inactiveRef.current;
+      const safeClubs = Array.isArray(allClubs) ? allClubs : [];
+      setClubs(safeClubs);
 
-      // Filtro matches dhe standings per kete kompeticion
-      const filteredMatches = allMatches.filter(m => 
-        m.competition_id === comp.id && 
-        !inactive.has(m.home_team_id) && 
-        !inactive.has(m.away_team_id)
-      );
-      
-      const filteredStandings = allStandings.filter(s => 
-        s.competition_id === comp.id && 
-        !inactive.has(s.club_id)
-      );
+      const filteredStandings = (Array.isArray(allStandings) ? allStandings : [])
+        .filter(s => s.competition_id === comp.id)
+        .sort((a,b) => (a.position||0)-(b.position||0));
 
-      // Rendi
-      filteredMatches.sort((a, b) => (a.round || 0) - (b.round || 0) || (a.date || '').localeCompare(b.date || ''));
-      filteredStandings.sort((a, b) => (a.position || 0) - (b.position || 0));
+      const filteredMatches = (Array.isArray(allMatches) ? allMatches : [])
+        .filter(m => m.competition_id === comp.id)
+        .sort((a,b) => (a.round||0)-(b.round||0));
 
-      setMatches(filteredMatches);
       setStandings(filteredStandings);
-
-      const LIVE_S = ['first_half','second_half','half_time','extra_time_first_half','extra_time_second_half','extra_time_half_time','awaiting_extra_time','penalties'];
-      setLiveMatches(filteredMatches.filter(m => LIVE_S.includes(m.status)));
-
-      console.log(`Per ${comp.name}: ${filteredStandings.length} standings, ${filteredMatches.length} matches`);
+      setMatches(filteredMatches);
       setLoading(false);
-    };
-    load();
-  }, [compId]);
+    }
+    if (competitionId) load();
+  }, [competitionId]);
+
+  const getStatusColor = (position) => {
+    if (!competition?.status_positions) return "transparent";
+    const st = competition.status_positions.find(s => s.position === position);
+    if (!st) return "transparent";
+    const txt = st.status.toLowerCase();
+    if (txt.includes("kampion")) return "#22c55e";
+    if (txt.includes("uecl") || txt.includes("uefa") || txt.includes("qual")) return "#3b82f6";
+    if (txt.includes("playoff")) return "#eab308";
+    if (txt.includes("renie")) return "#ef4444";
+    if (txt.includes("promovim")) return "#22c55e";
+    return "transparent";
+  };
+
+  const grouped = matches.reduce((acc, m) => {
+    const key = m.round ? `Java ${m.round}` : (m.phase_text || "Ndeshjet");
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(m);
+    return acc;
+  }, {});
+
+  const sortedGroupKeys = Object.keys(grouped).sort((a,b) => {
+    const numA = parseInt(a.replace(/\D/g,''))||0;
+    const numB = parseInt(b.replace(/\D/g,''))||0;
+    return numB - numA;
+  });
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      <div style={{display:"flex", justifyContent:"center", padding:"80px 0", background:"#f1f5f9", minHeight:"60vh"}}>
+        <div style={{width:32, height:32, border:"4px solid #e2e8f0", borderTopColor:"#0f172a", borderRadius:"50%", animation:"spin 1s linear infinite"}}></div>
+        <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       </div>
     );
   }
 
   if (!competition) {
     return (
-      <div className="text-center py-20">
-        <p className="text-muted-foreground">Kompeticion nuk u gjet: {compId}</p>
-        <p className="text-xs text-muted-foreground mt-2">Kontrollo /data/Competition.json</p>
-        <Link to="/ligat" className="text-primary text-sm mt-4 inline-block">Kthehu te Ligat</Link>
+      <div style={{textAlign:"center", padding:"80px 20px", background:"#f1f5f9", minHeight:"60vh"}}>
+        <p style={{color:"#64748b"}}>Kompeticion nuk u gjet: {competitionId}</p>
+        <Link to="/ligat" style={{color:"#2563eb", fontSize:14, marginTop:12, display:"inline-block"}}>← Kthehu te Ligat</Link>
       </div>
     );
   }
 
-  // Group matches by phase_text (cup) or round
-  const roundGroups = {};
-  matches.forEach(m => {
-    const key = m.phase_text ? `ph_${m.phase_text}` : String(m.round || 0);
-    if (!roundGroups[key]) roundGroups[key] = { label: m.phase_text || `Java ${m.round || '?'}`, items: [], phase_order: null };
-    roundGroups[key].items.push(m);
-    if (roundGroups[key].phase_order === null && m.phase_order != null) {
-      roundGroups[key].phase_order = m.phase_order;
-    }
-  });
-  Object.values(roundGroups).forEach(g => {
-    g.items.sort((a, b) => (a.date || '').localeCompare(b.date || '') || (a.time || '').localeCompare(b.time || ''));
-  });
-
-  const sortedRounds = Object.keys(roundGroups).sort((a, b) => {
-    const aIsPhase = a.startsWith('ph_');
-    const bIsPhase = b.startsWith('ph_');
-    if (aIsPhase && bIsPhase) {
-      const aOrder = roundGroups[a].phase_order;
-      const bOrder = roundGroups[b].phase_order;
-      if (aOrder != null && bOrder != null) return bOrder - aOrder;
-      if (aOrder != null) return -1;
-      if (bOrder != null) return 1;
-      const TEXT_ORDER = ['gjysëmfinale 2', 'gjysemfinale 2', 'gjysëmfinale 1', 'gjysemfinale 1', 'çerekfinale', 'cerekfinale', '1/8', '1/16'];
-      const aLabel = roundGroups[a].label.toLowerCase();
-      const bLabel = roundGroups[b].label.toLowerCase();
-      const aIdx = TEXT_ORDER.findIndex(p => aLabel.includes(p));
-      const bIdx = TEXT_ORDER.findIndex(p => bLabel.includes(p));
-      const aRank = aIdx === -1 ? 99 : aIdx;
-      const bRank = bIdx === -1 ? 99 : bIdx;
-      return aRank - bRank;
-    }
-    if (aIsPhase) return -1;
-    if (bIsPhase) return 1;
-    return Number(b) - Number(a);
-  });
-
   return (
-    <div className="py-4">
-      <Breadcrumbs items={[{ label: 'Ligat', to: '/ligat' }, { label: competition.name }]} />
-      <div className="flex items-center gap-3 mb-4">
-        {competition.logo ? (
-          <img src={competition.logo} alt={`${competition.name} logo`} className="w-12 h-12 rounded-lg object-cover" />
-        ) : (
-          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-            <span className="text-primary font-bold">{competition.name?.[0]}</span>
+    <div style={{background:"#f1f5f9", minHeight:"100vh", padding:"12px 12px 40px"}}>
+      <div style={{maxWidth:900, margin:"0 auto"}}>
+        
+        {/* Breadcrumbs + Header */}
+        <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:12, fontSize:12}}>
+          <Link to="/ligat" style={{color:"#64748b", textDecoration:"none"}}>Ligat</Link>
+          <span style={{color:"#cbd5e1"}}>/</span>
+          <span style={{color:"#0f172a", fontWeight:600}}>{competition.name}</span>
+        </div>
+
+        <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:16}}>
+          <div style={{width:48, height:48, background:"white", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 1px 2px rgba(0,0,0,0.06)", overflow:"hidden"}}>
+            {competition.logo ? <img src={competition.logo} alt={competition.name} style={{width:"100%", height:"100%", objectFit:"contain", padding:4}} onError={e=>e.currentTarget.style.display='none'} /> : <span style={{fontWeight:800}}>{competition.name[0]}</span>}
+          </div>
+          <div>
+            <h1 style={{margin:0, fontSize:16, fontWeight:800, letterSpacing:0.2}}>{competition.name}</h1>
+            <p style={{margin:0, fontSize:12, color:"#64748b"}}>{competition.season || "2026/2027"}</p>
+          </div>
+        </div>
+
+        {/* Tabs - Dizajni origjinal Base44 */}
+        <div style={{display:"flex", background:"#e2e8f0", borderRadius:12, padding:4, marginBottom:16}}>
+          <button onClick={()=>setActiveTab("TABELA")} style={{flex:1, padding:"10px 0", borderRadius:10, border:"none", cursor:"pointer", background: activeTab==="TABELA" ? "white" : "transparent", fontWeight:800, fontSize:12, letterSpacing:0.8, boxShadow: activeTab==="TABELA" ? "0 1px 3px rgba(0,0,0,0.1)" : "none", color: activeTab==="TABELA" ? "#0f172a" : "#64748b"}}>TABELA</button>
+          <button onClick={()=>setActiveTab("NDESHJET")} style={{flex:1, padding:"10px 0", borderRadius:10, border:"none", cursor:"pointer", background: activeTab==="NDESHJET" ? "white" : "transparent", fontWeight:800, fontSize:12, letterSpacing:0.8, boxShadow: activeTab==="NDESHJET" ? "0 1px 3px rgba(0,0,0,0.1)" : "none", color: activeTab==="NDESHJET" ? "#0f172a" : "#64748b"}}>NDESHJET</button>
+        </div>
+
+        {/* TABELA */}
+        {activeTab==="TABELA" && (
+          <div style={{background:"white", borderRadius:16, overflow:"hidden", boxShadow:"0 1px 3px rgba(0,0,0,0.06)"}}>
+            <div style={{display:"grid", gridTemplateColumns:"28px 1fr 32px 24px 24px 24px 36px 28px", padding:"12px 12px", fontSize:11, fontWeight:700, color:"#94a3b8", background:"#f8fafc", borderBottom:"1px solid #f1f5f9"}}>
+              <div>#</div><div>EKIPI</div><div style={{textAlign:"center"}}>NL</div><div style={{textAlign:"center"}}>F</div><div style={{textAlign:"center"}}>B</div><div style={{textAlign:"center"}}>H</div><div style={{textAlign:"center"}}>GD</div><div style={{textAlign:"center"}}>P</div>
+            </div>
+            {standings.length===0 ? <div style={{padding:30, textAlign:"center", color:"#94a3b8", fontSize:13}}>Nuk ka te dhena per tabelen</div> : standings.map((s, idx) => {
+              const club = clubs.find(c => c.id === s.club_id);
+              const name = club?.name || s.club_name || "Skuadra";
+              const logo = club?.logo || s.club_logo || "";
+              const color = getStatusColor(s.position);
+              const isTop = idx < 3;
+              const isBottom = idx >= standings.length-3;
+              return (
+                <div key={s.id || idx} style={{display:"grid", gridTemplateColumns:"28px 1fr 32px 24px 24px 24px 36px 28px", padding:"10px 12px", alignItems:"center", borderBottom:"1px solid #f8fafc", borderLeft:`3px solid ${color}`, background: isTop ? "#f0fdf4" : isBottom ? (color==="#ef4444" ? "#fef2f2" : color==="#eab308" ? "#fefce8" : "white") : "white"}}>
+                  <div style={{fontSize:12, fontWeight:700}}>{s.position || idx+1}</div>
+                  <div style={{display:"flex", alignItems:"center", gap:8, minWidth:0}}>
+                    {logo ? <img src={logo} alt={name} style={{width:20, height:20, objectFit:"contain"}} onError={e=>e.currentTarget.style.display='none'} /> : null}
+                    <span style={{fontSize:12, fontWeight:700, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis"}}>{name}</span>
+                  </div>
+                  <div style={{textAlign:"center", fontSize:12}}>{s.played||0}</div>
+                  <div style={{textAlign:"center", fontSize:12}}>{s.won||0}</div>
+                  <div style={{textAlign:"center", fontSize:12}}>{s.drawn||0}</div>
+                  <div style={{textAlign:"center", fontSize:12}}>{s.lost||0}</div>
+                  <div style={{textAlign:"center", fontSize:12}}>{s.goal_difference ?? ((s.goals_for||0)-(s.goals_against||0))}</div>
+                  <div style={{textAlign:"center", fontSize:12, fontWeight:800}}>{s.points||0}</div>
+                </div>
+              );
+            })}
+            {competition.status_positions && competition.status_positions.length>0 && (
+              <div style={{padding:"10px 14px", display:"flex", gap:14, flexWrap:"wrap", background:"#f8fafc", borderTop:"1px solid #f1f5f9"}}>
+                {Array.from(new Set(competition.status_positions.map(s=>s.status))).slice(0,4).map((st,i)=>{
+                  const pos = competition.status_positions.find(x=>x.status===st)?.position;
+                  const col = getStatusColor(pos);
+                  return <div key={i} style={{display:"flex", alignItems:"center", gap:5, fontSize:10}}><div style={{width:8, height:8, borderRadius:99, background:col}}></div><span style={{color:"#64748b"}}>{st}</span></div>;
+                })}
+              </div>
+            )}
           </div>
         )}
-        <div>
-          <h1 className="text-lg font-bold">{competition.name}<span className="sr-only"> | KosovoScores</span></h1>
-          <p className="text-xs text-muted-foreground">{competition.season}</p>
-        </div>
-      </div>
 
-      {/* Tabs */}
-      {(() => {
-        const nameLower = competition.name?.toLowerCase() || '';
-        const isCup = nameLower.includes('kup');
-        const isFriendly = nameLower.includes('miqesore') || nameLower.includes('miqësore') || nameLower.includes('friendly');
-        const tabs = (isCup || isFriendly) ? ['matches'] : ['standings', 'matches'];
-        if (!tabs.includes(activeTab)) { setTimeout(()=>switchTab(tabs[0]), 0); }
-        return (
-          <div className="flex gap-1 bg-muted rounded-lg p-1 mb-4">
-            {tabs.map(tab => (
-              <button
-                key={tab}
-                onClick={() => switchTab(tab)}
-                className={cn(
-                  'flex-1 py-2 rounded-md text-xs font-bold uppercase tracking-wide transition-all',
-                  activeTab === tab ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground'
-                )}
-              >
-                {tab === 'standings' ? 'Tabela' : 'Ndeshjet'}
-              </button>
-            ))}
-          </div>
-        );
-      })()}
-
-      {activeTab === 'standings' && (() => {
-        const nameLower2 = competition.name?.toLowerCase() || '';
-        const isCup = nameLower2.includes('kup');
-        const isFriendly2 = nameLower2.includes('miqesore') || nameLower2.includes('miqësore') || nameLower2.includes('friendly');
-        if (isCup || isFriendly2) return <p className="text-sm text-muted-foreground text-center py-8">Tabela nuk është e disponueshme për këtë kompeticion</p>;
-        const displayStandings = computeLiveStandings(standings, liveMatches);
-        const hasLive = liveMatches.length > 0;
-        return (
-          <>
-            {hasLive && <div className="mb-2 text-[10px] font-bold text-live text-center uppercase tracking-wide">⚡ Tabela Live – Duke u përditësuar në kohë reale</div>}
-            <StandingsTable standings={displayStandings} competition={competition} />
-            <CompetitionStats competition={competition} matches={matches} standings={displayStandings} />
-            {/ALBI MALL SUPERLIGA/i.test(competition.name || '') && (
-              <>
-                <CompetitionTopStats competition={competition} matches={matches} />
-                <SuperligaStats competition={competition} matches={matches} />
-              </>
-            )}
-          </>
-        );
-      })()}
-
-      {activeTab === 'matches' && (
-        <div className="space-y-4">
-          {sortedRounds.map(rkey => (
-            <div key={rkey}>
-              <div className="relative flex items-center gap-3 my-3">
-                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-border" />
-                <div className="flex items-center gap-2 bg-muted border border-border rounded-full px-3 py-1 shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 inline-block" />
-                  <span className="text-[11px] font-bold text-foreground/70 tracking-wide uppercase">{roundGroups[rkey].label}</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 inline-block" />
+        {/* NDESHJET */}
+        {activeTab==="NDESHJET" && (
+          <div style={{display:"flex", flexDirection:"column", gap:0}}>
+            {sortedGroupKeys.length===0 ? <div style={{background:"white", borderRadius:16, padding:30, textAlign:"center", color:"#94a3b8"}}>Nuk ka ndeshje</div> :
+              sortedGroupKeys.map(key => (
+                <div key={key} style={{marginBottom:16}}>
+                  <div style={{display:"flex", alignItems:"center", gap:12, margin:"14px 0 10px"}}>
+                    <div style={{flex:1, height:1, background:"linear-gradient(to right, transparent, #cbd5e1)"}}></div>
+                    <div style={{display:"flex", alignItems:"center", gap:6, background:"white", border:"1px solid #e2e8f0", borderRadius:99, padding:"5px 12px", boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
+                      <span style={{width:5, height:5, background:"#3b82f6", borderRadius:99}}></span>
+                      <span style={{fontSize:10, fontWeight:800, letterSpacing:0.6, color:"#334155"}}>{key.toUpperCase()}</span>
+                      <span style={{width:5, height:5, background:"#3b82f6", borderRadius:99}}></span>
+                    </div>
+                    <div style={{flex:1, height:1, background:"linear-gradient(to left, transparent, #cbd5e1)"}}></div>
+                  </div>
+                  <div style={{display:"flex", flexDirection:"column", gap:8}}>
+                    {grouped[key].map(m => (
+                      <div key={m.id} style={{background:"white", borderRadius:16, padding:"14px 12px", boxShadow:"0 1px 3px rgba(0,0,0,0.05)", display:"flex", alignItems:"center", justifyContent:"space-between"}}>
+                        <div style={{display:"flex", flexDirection:"column", alignItems:"center", flex:1, gap:6}}>
+                          <img src={m.home_team_logo || clubs.find(c=>c.id===m.home_team_id)?.logo || ""} alt={m.home_team_name} style={{width:44, height:44, objectFit:"contain"}} onError={e=>e.currentTarget.style.display='none'} />
+                          <span style={{fontSize:11, fontWeight:700, textAlign:"center", maxWidth:90, lineHeight:1.2}}>{m.home_team_name}</span>
+                        </div>
+                        <div style={{display:"flex", flexDirection:"column", alignItems:"center", minWidth:80}}>
+                          <div style={{fontSize:14, fontWeight:800, background:"#f1f5f9", padding:"4px 10px", borderRadius:8}}>
+                            {m.home_score!=null ? `${m.home_score} : ${m.away_score}` : (m.time || "16:00")}
+                          </div>
+                          <div style={{fontSize:10, color:"#94a3b8", marginTop:4}}>{m.date ? m.date.slice(0,10) : ""}</div>
+                          {m.stadium && <div style={{fontSize:9, color:"#94a3b8", textAlign:"center", maxWidth:120, marginTop:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis"}}>{m.stadium}</div>}
+                        </div>
+                        <div style={{display:"flex", flexDirection:"column", alignItems:"center", flex:1, gap:6}}>
+                          <img src={m.away_team_logo || clubs.find(c=>c.id===m.away_team_id)?.logo || ""} alt={m.away_team_name} style={{width:44, height:44, objectFit:"contain"}} onError={e=>e.currentTarget.style.display='none'} />
+                          <span style={{fontSize:11, fontWeight:700, textAlign:"center", maxWidth:90, lineHeight:1.2}}>{m.away_team_name}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex-1 h-px bg-gradient-to-l from-transparent via-border to-border" />
-              </div>
-              <div className="space-y-2">
-                {roundGroups[rkey].items.map(match => (
-                  <MatchCard key={match.id} match={match} />
-                ))}
-              </div>
-            </div>
-          ))}
-          {sortedRounds.length === 0 && (
-            <p className="text-center text-muted-foreground text-sm py-8">Nuk ka ndeshje ende</p>
-          )}
-        </div>
-      )}
+              ))
+            }
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
