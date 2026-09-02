@@ -1,19 +1,16 @@
-// COMPETITION_DETAIL_FIX.tsx - Vendose ne projektin tend
-// Zevendeso fajllin ekzistues: app/ligat/[id]/page.tsx OSE src/pages/CompetitionDetail.jsx
-
+// COMPETITION_DETAIL_FIX.jsx - VERSION PER .jsx (pa TypeScript)
 "use client";
 import { useEffect, useState } from "react";
 
 // Helper: ngarko JSON me siguri
-async function loadJSON(path: string) {
+async function loadJSON(path) {
   try {
     const res = await fetch(path);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    // Nese data eshte objekt me .data, nxjerre array-in
     if (Array.isArray(data)) return data;
     if (data && Array.isArray(data.data)) return data.data;
-    if (data && typeof data === 'object') return data; // per AppSettings
+    if (data && typeof data === 'object') return data;
     return [];
   } catch (e) {
     console.warn(`Gabim duke ngarkuar ${path}:`, e);
@@ -21,12 +18,12 @@ async function loadJSON(path: string) {
   }
 }
 
-export default function CompetitionDetail({ params }: { params: { id: string } }) {
+export default function CompetitionDetail({ params }) {
   const competitionId = params?.id;
-  const [competition, setCompetition] = useState<any>(null);
-  const [standings, setStandings] = useState<any[]>([]);
-  const [clubs, setClubs] = useState<any[]>([]);
-  const [matches, setMatches] = useState<any[]>([]);
+  const [competition, setCompetition] = useState(null);
+  const [standings, setStandings] = useState([]);
+  const [clubs, setClubs] = useState([]);
+  const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -41,18 +38,16 @@ export default function CompetitionDetail({ params }: { params: { id: string } }
           loadJSON("/data/Match.json"),
         ]);
 
-        // Gjej kompeticionin - provo me id OSE me emer slug
         let comp = null;
         if (Array.isArray(compData)) {
-          comp = compData.find((c: any) => 
+          comp = compData.find((c) => 
             c.id === competitionId || 
             c.name === decodeURIComponent(competitionId) ||
             c.id?.toString() === competitionId
           );
-          // Nese nuk gjendet me id, provo me emer te pastruar
           if (!comp) {
             const decoded = decodeURIComponent(competitionId).toLowerCase().replace(/-/g, " ");
-            comp = compData.find((c: any) => 
+            comp = compData.find((c) => 
               c.name?.toLowerCase().includes(decoded) ||
               decoded.includes(c.name?.toLowerCase())
             );
@@ -61,39 +56,35 @@ export default function CompetitionDetail({ params }: { params: { id: string } }
         
         if (!comp) {
           setError(`Kompeticioni nuk u gjet: ${competitionId}`);
-          console.log("Available competitions:", compData.map((c:any)=> ({id:c.id, name:c.name})));
+          console.log("Available competitions:", compData.map((c)=> ({id:c.id, name:c.name})));
         } else {
           setCompetition(comp);
         }
 
-        // FIX KRYESOR: sigurohu qe jane ARRAY para se te besh .find ose .filter
         const safeClubs = Array.isArray(clubData) ? clubData : [];
         const safeStandings = Array.isArray(standingData) ? standingData : [];
         const safeMatches = Array.isArray(matchData) ? matchData : [];
 
         setClubs(safeClubs);
         
-        // Filtro tabelen vetem per kete kompeticion
         if (comp) {
-          const filteredStandings = safeStandings.filter((s: any) => 
+          const filteredStandings = safeStandings.filter((s) => 
             s.competition_id === comp.id
           );
-          // Rendi sipas pozites
-          filteredStandings.sort((a:any,b:any) => (a.position || 0) - (b.position || 0));
+          filteredStandings.sort((a,b) => (a.position || 0) - (b.position || 0));
           setStandings(filteredStandings);
 
-          const filteredMatches = safeMatches.filter((m: any) => 
+          const filteredMatches = safeMatches.filter((m) => 
             m.competition_id === comp.id
           );
-          // Rendi sipas dates
-          filteredMatches.sort((a:any,b:any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          filteredMatches.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
           setMatches(filteredMatches);
         } else {
           setStandings(safeStandings);
           setMatches(safeMatches);
         }
 
-      } catch (e: any) {
+      } catch (e) {
         console.error(e);
         setError(e.message);
       } finally {
@@ -123,7 +114,6 @@ export default function CompetitionDetail({ params }: { params: { id: string } }
 
   return (
     <div style={{maxWidth:1100, margin:"0 auto", padding:20}}>
-      {/* Header i kompeticionit */}
       <div style={{display:"flex", alignItems:"center", gap:16, marginBottom:24, background:"#f8f9fa", padding:16, borderRadius:12}}>
         {competition.logo && (
           <img 
@@ -139,7 +129,6 @@ export default function CompetitionDetail({ params }: { params: { id: string } }
         </div>
       </div>
 
-      {/* Tabela */}
       <div style={{background:"white", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 3px rgba(0,0,0,0.1)", marginBottom:24}}>
         <div style={{padding:"12px 16px", fontWeight:"bold", borderBottom:"1px solid #eee", background:"#fafafa"}}>
           Tabela - {competition.name}
@@ -163,14 +152,12 @@ export default function CompetitionDetail({ params }: { params: { id: string } }
                 </tr>
               </thead>
               <tbody>
-                {standings.map((s: any, idx: number) => {
-                  // FIX KRYESOR: sigurohu qe clubs eshte array para .find
+                {standings.map((s, idx) => {
                   let clubName = s.club_name || "Skuadra";
                   let clubLogo = s.club_logo || "";
                   
-                  // KERKO klubin me siguri
                   if (Array.isArray(clubs) && clubs.length > 0) {
-                    const club = clubs.find((c: any) => c.id === s.club_id);
+                    const club = clubs.find((c) => c.id === s.club_id);
                     if (club) {
                       clubName = club.name || clubName;
                       clubLogo = club.logo || clubLogo;
@@ -206,12 +193,11 @@ export default function CompetitionDetail({ params }: { params: { id: string } }
         )}
       </div>
 
-      {/* Ndeshjet e fundit */}
       <div style={{background:"white", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
         <div style={{padding:"12px 16px", fontWeight:"bold", borderBottom:"1px solid #eee", background:"#fafafa"}}>
           Ndeshjet e fundit
         </div>
-        {matches.slice(0,10).map((m: any) => (
+        {matches.slice(0,10).map((m) => (
           <div key={m.id} style={{padding:"12px 16px", borderTop:"1px solid #f0f0f0", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
             <span style={{fontSize:13}}>{m.home_team_name} vs {m.away_team_name}</span>
             <span style={{fontWeight:"bold", background:"#f0f0f0", padding:"4px 8px", borderRadius:6, fontSize:13}}>
@@ -222,7 +208,6 @@ export default function CompetitionDetail({ params }: { params: { id: string } }
         {matches.length === 0 && <div style={{padding:20, textAlign:"center", color:"#666"}}>Nuk ka ndeshje per kete kompeticion.</div>}
       </div>
 
-      {/* Debug info - fshije me vone */}
       <div style={{marginTop:20, padding:12, background:"#fff3cd", borderRadius:8, fontSize:12}}>
         <strong>DEBUG:</strong> Competition ID: {competition.id} | Clubs loaded: {clubs.length} (Array: {Array.isArray(clubs) ? "PO" : "JO"}) | Standings: {standings.length} | Matches: {matches.length}
       </div>
