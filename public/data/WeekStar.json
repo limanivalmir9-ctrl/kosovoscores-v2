@@ -1,0 +1,50 @@
+[
+  {
+    "player_photo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/e65aa8399_player2_white_transparent.webp",
+    "player_id": "6a7e519fb31f5c18b3137351",
+    "club_logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/464ac440d_PRISHTINA.png",
+    "competition_id": "6a7484dc4af04c7780f99b61",
+    "club_id": "69c4881d0e0cfcb24af6b534",
+    "description": "",
+    "week_number": 3,
+    "player_name": "Assane Diatta",
+    "club_name": "FC PRISHTINA",
+    "id": "6a957bac80a56983efca47ac",
+    "created_date": "2026-08-31T13:03:40.034000",
+    "updated_date": "2026-08-31T13:03:40.034000",
+    "created_by_id": "69c340685dca7075d7622e16",
+    "is_sample": false
+  },
+  {
+    "player_photo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/71fd3efdb_photorealistic_headshot_white_background.webp",
+    "player_id": "69cb0e55d71e514e7fa6f752",
+    "club_logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/baf542e16_GJILANI.png",
+    "competition_id": "6a7484dc4af04c7780f99b61",
+    "club_id": "69c53f8953c90d503463763d",
+    "description": "",
+    "week_number": 2,
+    "player_name": "Oltion Bilalli",
+    "club_name": "SC GJILANI",
+    "id": "6a8c122a1294c8e05db10ea3",
+    "created_date": "2026-08-24T09:43:06.098000",
+    "updated_date": "2026-08-24T09:43:06.098000",
+    "created_by_id": "69c340685dca7075d7622e16",
+    "is_sample": false
+  },
+  {
+    "player_photo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/b216137ea_man_clear_transparent1.png",
+    "player_id": "69cb0f8f46c0cd4c866f34fd",
+    "club_logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/464ac440d_PRISHTINA.png",
+    "competition_id": "6a7484dc4af04c7780f99b61",
+    "club_id": "69c4881d0e0cfcb24af6b534",
+    "description": "",
+    "week_number": 1,
+    "player_name": "Albin Krasniqi",
+    "club_name": "FC PRISHTINA",
+    "id": "6a837c5422241153611fb30f",
+    "created_date": "2026-08-17T21:25:40.961000",
+    "updated_date": "2026-08-17T21:33:37.974000",
+    "created_by_id": "anonymous",
+    "is_sample": false
+  }
+]
