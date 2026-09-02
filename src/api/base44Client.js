@@ -1,5 +1,4 @@
 // KosovoScores V2 - Self-hosted, pa Base44
-
 export const base44 = {
   entities: new Proxy({}, {
     get: (target, entityName) => ({
@@ -12,6 +11,11 @@ export const base44 = {
       update: async (id, data) => ({ id, ...data }),
       delete: async () => true,
       filter: async () => [],
+      subscribe: (callback) => {
+        console.log(`Mock ${String(entityName)}.subscribe()`);
+        // kthen unsubscribe function
+        return () => {};
+      },
     })
   }),
   auth: {
