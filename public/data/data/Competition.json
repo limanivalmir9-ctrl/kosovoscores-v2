@@ -1,0 +1,344 @@
+[
+  {
+    "id": "6a74979fb131e76389be2432",
+    "name": "SUPERLIGA E FEMRAVE",
+    "logo": "https://media.base44.com/images/public/69c340685dca7075d7622e15/1d13df0d5_SPFEMRAT.png",
+    "season": "2026/2027",
+    "tier": 4,
+    "color": "#ec4899",
+    "color_safe": "#ec4899",
+    "status_positions": [],
+    "archived": false,
+    "hidden": false,
+    "show_profiles": true,
+    "show_squad": false
+  },
+  {
+    "id": "6a7484de797e8618445b26c5",
+    "name": "SUPERLIGA U19",
+    "logo": "https://media.base44.com/images/public/69c340685dca7075d7622e15/09a483065_LOGOLIGA_transparent.png",
+    "season": "2026/2027",
+    "tier": 6,
+    "color": "purple-500",
+    "color_safe": "#a855f7",
+    "status_positions": [
+      {
+        "position": 1,
+        "status": "Kampion, UEFA Youth League"
+      },
+      {
+        "position": 14,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 15,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 16,
+        "status": "Renie nga liga"
+      }
+    ],
+    "archived": false,
+    "hidden": false,
+    "show_profiles": true,
+    "show_squad": false
+  },
+  {
+    "id": "6a7484dedad209108a2d3667",
+    "name": "KUPA E KOSOVËS",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/5a8b89052_kupaeks.png",
+    "season": "2026/2027",
+    "tier": 4,
+    "color": "cyan-500",
+    "color_safe": "#06b6d4",
+    "status_positions": [],
+    "archived": false,
+    "hidden": false,
+    "show_profiles": true,
+    "show_squad": false
+  },
+  {
+    "id": "6a7484ddad090536a8e1875a",
+    "name": "LIGA E DYTË E KOSOVËS",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/8140b474a_LIGAEDYTE.png",
+    "season": "2026/2027",
+    "tier": 3,
+    "color": "cyan-500",
+    "color_safe": "#06b6d4",
+    "status_positions": [
+      {
+        "position": 1,
+        "status": "Promovim"
+      },
+      {
+        "position": 2,
+        "status": "Promovim"
+      },
+      {
+        "position": 17,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 18,
+        "status": "Renie nga liga"
+      }
+    ],
+    "archived": false,
+    "hidden": false,
+    "show_profiles": true,
+    "show_squad": false
+  },
+  {
+    "id": "6a7484dcb63c5aab429503c8",
+    "name": "RAIFFEISEN LIGA E PARË",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/22250fc28_RaiffeisenLigaPare.png",
+    "season": "2026/2027",
+    "tier": 2,
+    "color": "orange-500",
+    "color_safe": "orange-500",
+    "status_positions": [
+      {
+        "position": 1,
+        "status": "Kampion"
+      },
+      {
+        "position": 2,
+        "status": "Kampion"
+      },
+      {
+        "position": 3,
+        "status": "Playoff"
+      },
+      {
+        "position": 15,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 16,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 17,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 18,
+        "status": "Renie nga liga"
+      }
+    ],
+    "archived": false,
+    "hidden": false,
+    "show_profiles": true,
+    "show_squad": false
+  },
+  {
+    "id": "6a7484dc4af04c7780f99b61",
+    "name": "ALBI MALL SUPERLIGA",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/d3a2a147a_ALBIMALLSUPERLIGA.png",
+    "season": "2026/2027",
+    "tier": 1,
+    "color": "green-500",
+    "color_safe": "green-500",
+    "status_positions": [
+      {
+        "position": 1,
+        "status": "Kampion"
+      },
+      {
+        "position": 2,
+        "status": "UECL Qual."
+      },
+      {
+        "position": 3,
+        "status": "UECL Qual."
+      },
+      {
+        "position": 10,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 9,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 8,
+        "status": "Playoff"
+      }
+    ],
+    "archived": false,
+    "hidden": false,
+    "show_profiles": true,
+    "show_squad": true
+  },
+  {
+    "id": "69cafd79dae733babf38cdab",
+    "name": "MIQËSORE",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/3f7fc5f5c_FRIENDLY.png",
+    "season": null,
+    "tier": 7,
+    "color": "red-500",
+    "color_safe": "red-500",
+    "status_positions": [],
+    "archived": null,
+    "hidden": null,
+    "show_profiles": true,
+    "show_squad": false
+  },
+  {
+    "id": "69c5e15f2cb53c180052ae73",
+    "name": "KUPA E KOSOVËS",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/5a8b89052_kupaeks.png",
+    "season": "2025/2026",
+    "tier": 4,
+    "color": "cyan-500",
+    "color_safe": "#06b6d4",
+    "status_positions": [],
+    "archived": true,
+    "hidden": null,
+    "show_profiles": true,
+    "show_squad": true
+  },
+  {
+    "id": "69c47a881a8315919b1dc7cc",
+    "name": "SUPERLIGA U19",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/b645e3037_LOGOU19.png",
+    "season": "2025/2026",
+    "tier": 6,
+    "color": "purple-500",
+    "color_safe": "#a855f7",
+    "status_positions": [],
+    "archived": true,
+    "hidden": null,
+    "show_profiles": true,
+    "show_squad": true
+  },
+  {
+    "id": "69c47a707150d64d91e05d7c",
+    "name": "SUPERLIGA U21",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/b7c564295_SUPERLIGAU21.png",
+    "season": "2025/2026",
+    "tier": 5,
+    "color": "cyan-500",
+    "color_safe": "#06b6d4",
+    "status_positions": [
+      {
+        "position": 1,
+        "status": "Kampion"
+      }
+    ],
+    "archived": true,
+    "hidden": false,
+    "show_profiles": true,
+    "show_squad": true
+  },
+  {
+    "id": "69c47a2332df3034ac8af021",
+    "name": "LIGA E DYTË E KOSOVËS",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/8140b474a_LIGAEDYTE.png",
+    "season": "2025/2026",
+    "tier": 3,
+    "color": "cyan-500",
+    "color_safe": "#06b6d4",
+    "status_positions": [
+      {
+        "position": 1,
+        "status": "Promovim"
+      },
+      {
+        "position": 2,
+        "status": "Promovim"
+      },
+      {
+        "position": 17,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 18,
+        "status": "Renie nga liga"
+      }
+    ],
+    "archived": true,
+    "hidden": null,
+    "show_profiles": true,
+    "show_squad": true
+  },
+  {
+    "id": "69c348a57f4d228e291fb468",
+    "name": "RAIFFEISEN LIGA E PARË",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/22250fc28_RaiffeisenLigaPare.png",
+    "season": "2025/2026",
+    "tier": 2,
+    "color": "orange-500",
+    "color_safe": "orange-500",
+    "status_positions": [
+      {
+        "position": 1,
+        "status": "Kampion"
+      },
+      {
+        "position": 2,
+        "status": "Kampion"
+      },
+      {
+        "position": 3,
+        "status": "Playoff"
+      },
+      {
+        "position": 4,
+        "status": "Playoff"
+      },
+      {
+        "position": 17,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 18,
+        "status": "Renie nga liga"
+      }
+    ],
+    "archived": true,
+    "hidden": null,
+    "show_profiles": true,
+    "show_squad": true
+  },
+  {
+    "id": "69c34416e7b3bcb5d1250252",
+    "name": "ALBI MALL SUPERLIGA",
+    "logo": "https://base44.app/api/apps/69c340685dca7075d7622e15/files/mp/public/69c340685dca7075d7622e15/d3a2a147a_ALBIMALLSUPERLIGA.png",
+    "season": "2025/2026",
+    "tier": 1,
+    "color": "green-500",
+    "color_safe": "green-500",
+    "status_positions": [
+      {
+        "position": 1,
+        "status": "Kampion"
+      },
+      {
+        "position": 2,
+        "status": "UECL Qual."
+      },
+      {
+        "position": 3,
+        "status": "UECL Qual."
+      },
+      {
+        "position": 10,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 9,
+        "status": "Renie nga liga"
+      },
+      {
+        "position": 8,
+        "status": "Playoff"
+      }
+    ],
+    "archived": true,
+    "hidden": false,
+    "show_profiles": true,
+    "show_squad": true
+  }
+]
